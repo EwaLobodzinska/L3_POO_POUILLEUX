@@ -8,11 +8,13 @@ public class DeterministDeck implements Deck {
 
     private final Queue<Card> cards = new LinkedList<>();
 
-
     public DeterministDeck(Card... cards) {
-        this.cards.addAll(Arrays.asList(cards));
+        for (Card card : cards){
+            //don't add valet of spade
+            if(card.getColor().getCode() != 127137 || card.getValue().getRank() != 11)
+                this.cards.add(card);
+        }
     }
-
 
     @Override
     public Card[] getCards(int length) {
