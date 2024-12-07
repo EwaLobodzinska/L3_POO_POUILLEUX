@@ -50,22 +50,11 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
     }
 
-    /**
-     * get the set of players initially in the game
-     *
-     * @return
-     */
     @Override
     protected List<String> getInitialPlayers() {
         return new ArrayList<>(this.war.getPlayers());
     }
 
-    /**
-     * give this hand (as string) the the provided player
-     *
-     * @param playerName name of the player to receive the cards
-     * @param hand       the cards as Strings
-     */
     @Override
     protected void giveCardsToPlayer(String playerName, String hand) {
         hostFacade.sendGameCommandToPlayer(war, playerName, new GameCommand("cardsForYou", hand));
@@ -77,14 +66,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         hostFacade.sendGameCommandToPlayer(war, winner, new GameCommand("gameOver", "win"));
     }
 
-    /**
-     * Try to get a card from the player. If it fails, give roundStack to the other player
-     *
-     * @param leftOverCard               current cards at stake
-     * @param cardProviderPlayer         the player (to provide a card)
-     * @param cardProviderPlayerOpponent its opponent (to receive the stack if contestantA does not have cards anymore)
-     * @return the card from contestant A or null if contetant A is gameover
-     */
     @Override
     protected Card getCardOrGameOver(Collection<Card> leftOverCard, String cardProviderPlayer, String cardProviderPlayerOpponent) {
 
@@ -103,12 +84,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
     }
 
-    /**
-     * give this stack of card to the winner player
-     *
-     * @param roundStack a stack of card at stake
-     * @param winner     the winner
-     */
     @Override
     protected void giveCardsToPlayer(Collection<Card> roundStack, String winner) {
         List<Card> cards = new ArrayList<>();
@@ -118,15 +93,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         hostFacade.sendGameCommandToPlayer(war, winner, new GameCommand("cardsForYou", Card.cardsToString(cards.toArray(new Card[cards.size()]))));
     }
 
-    /**
-     * we get a card from a player, if possible.
-     * <p>
-     * If the player has no more card, throw an exception
-     *
-     * @param player the name of the player
-     * @return a card from a player
-     * @throws NoMoreCardException if player has no more card.
-     */
     @Override
     protected Card getCardFromPlayer(String player) throws NoMoreCardException {
         hostFacade.sendGameCommandToPlayer(war, player, new GameCommand("playACard"));

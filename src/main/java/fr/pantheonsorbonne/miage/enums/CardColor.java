@@ -1,8 +1,5 @@
 package fr.pantheonsorbonne.miage.enums;
 
-/**
- * List the possible colors of a card
- */
 public enum CardColor {
     SPADE(127137),
     HEART(127137 + 16),

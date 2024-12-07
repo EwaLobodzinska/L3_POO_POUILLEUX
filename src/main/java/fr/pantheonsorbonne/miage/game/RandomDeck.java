@@ -2,13 +2,9 @@ package fr.pantheonsorbonne.miage.game;
 
 import java.util.*;
 
-/**
- * Represents a Deck of cards
- */
 public class RandomDeck implements Deck {
 
     private final static Random random = new Random();
-
     private final Queue<Card> deck = new LinkedList<>();
 
 
@@ -22,9 +18,7 @@ public class RandomDeck implements Deck {
         for (int i = 0; i < cards.size(); i++) {
             this.deck.offer(cards.get(i));
         }
-
     }
-
 
     @Override
     public Card[] getCards(int length) {

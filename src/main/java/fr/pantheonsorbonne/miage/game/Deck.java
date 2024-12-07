@@ -7,12 +7,6 @@ public interface Deck {
         return getCards(1)[0];
     }
 
-    /**
-     * return an array of random cards
-     *
-     * @param length the size of the array
-     * @return
-     */
     Card[] getCards(int length);
 
 }

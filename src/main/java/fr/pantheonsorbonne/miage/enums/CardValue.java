@@ -1,8 +1,5 @@
 package fr.pantheonsorbonne.miage.enums;
 
-/**
- * An enum that represend the possible cards value from a deck
- */
 public enum CardValue {
     ACE("1", 14),
     TWO("2", 2),
@@ -26,13 +23,6 @@ public enum CardValue {
         this.rank = value;
     }
 
-    /**
-     * From a string representation, return the cad
-     *
-     * @param str
-     * @return the corresponding card
-     * @throws RuntimeException if the representation is invalid
-     */
     public static CardValue valueOfStr(String str) {
         for (CardValue value : CardValue.values()) {
             if (str.equals(value.getStringRepresentation())) {
@@ -48,11 +38,6 @@ public enum CardValue {
         return stringRepresentation;
     }
 
-    /**
-     * the rank of the card for comparison purpose. The higher the rank, the better the card
-     *
-     * @return
-     */
     public int getRank() {
         return rank;
     }

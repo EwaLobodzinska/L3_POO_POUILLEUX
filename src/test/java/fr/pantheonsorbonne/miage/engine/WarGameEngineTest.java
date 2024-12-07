@@ -22,7 +22,7 @@ class WarGameEngineTest {
     void setUp() {
 
 
-        this.engine = new LocalPouilleuxGame(new DeterministDeck(Card.getAllPossibleCards().toArray(new Card[0])), 2, Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
+        this.engine = new LocalPouilleuxGame(new DeterministDeck(Card.getAllPossibleCards().toArray(new Card[0])), Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
         this.players = new LinkedList<>();
         this.players.addAll(Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
     }
