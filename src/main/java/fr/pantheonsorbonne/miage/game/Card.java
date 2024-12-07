@@ -24,20 +24,10 @@ public class Card {
         return Arrays.stream(cards).map(Card::toString).collect(Collectors.joining(";"));
     }
 
-    /**
-     * get the value of the card
-     *
-     * @return
-     */
     public CardValue getValue() {
         return value;
     }
 
-    /**
-     * Get the color of the card
-     *
-     * @return
-     */
     public CardColor getColor() {
         return color;
     }
@@ -49,13 +39,6 @@ public class Card {
         return Arrays.stream(cards.split(";")).map(Card::valueOf).toArray(Card[]::new);
     }
 
-    /**
-     * For a String representation of a card, return the card
-     *
-     * @param str
-     * @return the card
-     * @throws RuntimeException if the String representation is Invaliid
-     */
     public static Card valueOf(String str) {
         CardValue value;
         CardColor color;
