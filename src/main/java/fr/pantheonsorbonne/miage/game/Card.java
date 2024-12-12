@@ -57,8 +57,11 @@ public class Card {
         List<Card> possibleCards = new ArrayList<>(CardColor.values().length * CardValue.values().length);
         for (CardColor color : CardColor.values()) {
             for (CardValue value : CardValue.values()) {
-                possibleCards.add(new Card(color, value));
-            }
+                //don't add valet of club
+                if(color.getCode() != 127137 + 16 * 3 || value.getRank() != 11){
+                    possibleCards.add(new Card(color, value));
+                }
+            }    
         }
         return possibleCards;
     }

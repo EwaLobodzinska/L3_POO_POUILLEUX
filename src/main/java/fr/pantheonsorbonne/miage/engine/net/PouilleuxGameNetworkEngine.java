@@ -38,7 +38,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         hostFacade.createNewPlayer("Host");
 
         //create a new game of war
-        fr.pantheonsorbonne.miage.model.Game war = hostFacade.createNewGame("WAR");
+        fr.pantheonsorbonne.miage.model.Game war = hostFacade.createNewGame("POUILLEUX");
 
         //wait for enough players to join
         hostFacade.waitForExtraPlayerCount(PLAYER_COUNT);
@@ -67,7 +67,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
     }
 
     @Override
-    protected Card getCardOrGameOver(Collection<Card> leftOverCard, String cardProviderPlayer, String cardProviderPlayerOpponent) {
+    protected Card getCardOrGameOver(String cardProviderPlayer, String cardProviderPlayerOpponent) {
 
         try {
             return getCardFromPlayer(cardProviderPlayer);
@@ -106,6 +106,19 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         //should not happen!
         throw new RuntimeException("invalid state");
 
+    }
+
+    @Override
+    protected void giveOneCardToPlayer(Card card, String player) {
+    }
+
+    @Override
+    protected void removePairsFromPlayer(String player){
+    }
+
+    protected int findPairs(String player){ 
+            return 0;
+         
     }
 
 }

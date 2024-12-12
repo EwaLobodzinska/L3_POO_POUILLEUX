@@ -10,8 +10,8 @@ public class DeterministDeck implements Deck {
 
     public DeterministDeck(Card... cards) {
         for (Card card : cards){
-            //don't add valet of spade
-            if(card.getColor().getCode() != 127137 || card.getValue().getRank() != 11)
+            //don't add valet of club
+            if(card.getColor().getCode() != 127137 + 16 * 3 || card.getValue().getRank() != 11)
                 this.cards.add(card);
         }
     }

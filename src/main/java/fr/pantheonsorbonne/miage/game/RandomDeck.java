@@ -12,6 +12,7 @@ public class RandomDeck implements Deck {
 
         //generate all cards
         List<Card> cards = Card.getAllPossibleCards();
+        
         //shuffle
         Collections.shuffle(cards);
         //associate with the deck
