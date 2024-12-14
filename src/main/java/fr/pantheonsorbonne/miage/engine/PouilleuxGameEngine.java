@@ -45,9 +45,9 @@ public abstract class PouilleuxGameEngine {
         }
 
         String winner = "";
-        int initialPlayerSize = players.size();
+        //int initialPlayerSize = players.size();
 
-        while (players.size() == initialPlayerSize) {
+        while (true) {
 
             String firstPlayerInRound = players.poll();
             players.offer(firstPlayerInRound);
@@ -58,6 +58,12 @@ public abstract class PouilleuxGameEngine {
             if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound)) != ""){
                 winner = play;
                 declareWinner(winner);
+                for (String player : players){
+                    if(player != winner && checkLoser(player)){
+                        declareLoser(player);
+                    }
+                }
+                break;
             }
             
         }
@@ -77,7 +83,7 @@ public abstract class PouilleuxGameEngine {
         if (cardToFirstPlayer == null) {
             //secondPlayerInRound --> winner
             winner = secondPlayerInRound;
-            players.remove(firstPlayerInRound);
+            //players.remove(firstPlayerInRound);
             return winner;
         }
 
@@ -88,7 +94,7 @@ public abstract class PouilleuxGameEngine {
         if (!checkCardOrGameOverSecond) {
             //secondPlayerInRound --> winner
             winner = secondPlayerInRound;
-            players.remove(firstPlayerInRound);
+            //players.remove(firstPlayerInRound);
             return winner;
         }
 
@@ -98,7 +104,7 @@ public abstract class PouilleuxGameEngine {
         boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
         if (!checkCardOrGameOver) {
             winner = firstPlayerInRound;
-            players.remove(secondPlayerInRound);
+            //players.remove(secondPlayerInRound);
             return winner;
         }
 
@@ -107,6 +113,8 @@ public abstract class PouilleuxGameEngine {
     }
 
     protected abstract void declareWinner(String winner);
+
+    protected abstract void declareLoser(String loser);
 
     protected abstract Card getCardOrGameOver(String cardProviderPlayer);
 
@@ -121,6 +129,9 @@ public abstract class PouilleuxGameEngine {
     protected abstract void giveOneCardToPlayer(Card card, String player); 
 
     protected abstract List<Card> findPairs(String player);
+
+    protected abstract boolean checkLoser(String player);
+
 
 
 

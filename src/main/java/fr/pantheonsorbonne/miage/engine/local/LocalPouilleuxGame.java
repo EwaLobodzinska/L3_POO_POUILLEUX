@@ -60,6 +60,11 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     }
 
     @Override
+    protected void declareLoser(String loser) {
+        System.out.println(loser + " has lost :(");
+    }
+
+    @Override
     protected Card getCardOrGameOver(String cardProviderPlayer) {
 
         if (!this.playerCards.containsKey(cardProviderPlayer) || this.playerCards.get(cardProviderPlayer).isEmpty()) {
@@ -136,7 +141,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
             Collections.shuffle(shuffleCards);
             updatedQueue.clear();
             updatedQueue.addAll(shuffleCards);
-            
+
             this.playerCards.put(player, updatedQueue);
         }
     }
@@ -197,4 +202,14 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
         return null; 
     }
 
+    @Override
+    protected boolean checkLoser(String player) {
+        Queue<Card> cards = this.playerCards.get(player);
+        for(Card card : cards){
+            if(card.getColor().getCode() == 127137 && card.getValue().getRank() == 11){
+                return true;
+            }
+        }
+        return false;
+    }
 }
