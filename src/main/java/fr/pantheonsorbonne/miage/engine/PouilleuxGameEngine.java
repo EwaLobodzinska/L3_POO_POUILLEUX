@@ -5,6 +5,7 @@ import fr.pantheonsorbonne.miage.game.Card;
 import fr.pantheonsorbonne.miage.game.Deck;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class PouilleuxGameEngine {
 
@@ -35,6 +36,13 @@ public abstract class PouilleuxGameEngine {
 
         final Queue<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
+        
+
+        for(String player : players){
+             while(findPairs(player) != null){
+                removePairsFromPlayer(player);
+             }
+        }
 
         String winner = "";
         int initialPlayerSize = players.size();
@@ -46,42 +54,63 @@ public abstract class PouilleuxGameEngine {
 
             String secondPlayerInRound = players.poll();
             players.offer(secondPlayerInRound);
-
-            if (playRound(players, firstPlayerInRound, secondPlayerInRound)) 
-                winner = secondPlayerInRound;
-
+            String play;
+            if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound)) != ""){
+                winner = play;
+                declareWinner(winner);
+            }
             
         }
         //since we've left the loop, we have only 1 player left: the winner
         //send him the gameover and leave
-        declareWinner(winner);
+        
     }
 
     protected abstract List<String> getInitialPlayers();
 
     protected abstract void giveCardsToPlayer(String playerName, String hand);
 
-    protected boolean playRound(Queue<String> players, String firstPlayerInRound, String secondPlayerInRound) {
-
+    protected String playRound(Queue<String> players, String firstPlayerInRound, String secondPlayerInRound) {
+        String winner;
         //here, we try to get the first player card
-        Card cardToFirstPlayer = getCardOrGameOver(firstPlayerInRound, secondPlayerInRound);
+        Card cardToFirstPlayer = getCardOrGameOver(secondPlayerInRound);
         if (cardToFirstPlayer == null) {
             //secondPlayerInRound --> winner
+            winner = secondPlayerInRound;
             players.remove(firstPlayerInRound);
-            return true;
+            return winner;
         }
 
+        System.out.println(cardToFirstPlayer.toString());
         giveOneCardToPlayer(cardToFirstPlayer, firstPlayerInRound);
+
+        boolean checkCardOrGameOverSecond = checkCardOrGameOver(secondPlayerInRound);
+        if (!checkCardOrGameOverSecond) {
+            //secondPlayerInRound --> winner
+            winner = secondPlayerInRound;
+            players.remove(firstPlayerInRound);
+            return winner;
+        }
 
         //verifier la paire 
         removePairsFromPlayer(firstPlayerInRound);
+
+        boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
+        if (!checkCardOrGameOver) {
+            winner = firstPlayerInRound;
+            players.remove(secondPlayerInRound);
+            return winner;
+        }
+
         //otherwise we do another round.
-        return false;
+        return "";
     }
 
     protected abstract void declareWinner(String winner);
 
-    protected abstract Card getCardOrGameOver(String cardProviderPlayer, String cardProviderPlayerOpponent);
+    protected abstract Card getCardOrGameOver(String cardProviderPlayer);
+
+    protected abstract boolean checkCardOrGameOver(String cardProviderPlayer);
 
     protected abstract void giveCardsToPlayer(Collection<Card> cards, String playerName);
 
@@ -91,7 +120,9 @@ public abstract class PouilleuxGameEngine {
     
     protected abstract void giveOneCardToPlayer(Card card, String player); 
 
-    protected abstract int findPairs(String playerName);
+    protected abstract List<Card> findPairs(String player);
+
+
 
 
 

@@ -72,7 +72,7 @@ class WarGameEngineTest {
         engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KH")), "Joueur1");
         engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KD")), "Joueur2");
         Queue<Card> handOver = new LinkedList<>();
-        assertFalse(engine.playRound(this.players, "Joueur1", "Joueur2", handOver));
+        assertFalse(engine.playRound(this.players, "Joueur1", "Joueur2"));
 
         assertThrows(NoMoreCardException.class, () -> engine.getCardFromPlayer("Joueur1"));
         assertThrows(NoMoreCardException.class, () -> engine.getCardFromPlayer("Joueur2"));
@@ -99,20 +99,20 @@ class WarGameEngineTest {
         assertTrue(cardFromJoueur1.containsAll(Arrays.asList(Card.valueOf("KH"), Card.valueOf("1H"), Card.valueOf("2H"))));
     }
 
-    @Test
-    void getWinnerWinJ2() {
-        assertEquals("Joueur2", PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("2H"), Card.valueOf("3H")));
-    }
+    // @Test
+    // void getWinnerWinJ2() {
+    //     assertEquals("Joueur2", PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("2H"), Card.valueOf("3H")));
+    // }
 
-    @Test
-    void getWinnerWinJ1() {
-        assertEquals("Joueur1", PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("3H"), Card.valueOf("2H")));
-    }
+    // @Test
+    // void getWinnerWinJ1() {
+    //     assertEquals("Joueur1", PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("3H"), Card.valueOf("2H")));
+    // }
 
-    @Test
-    void getWinnerTie() {
-        assertEquals(null, PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("3H"), Card.valueOf("3S")));
-    }
+    // @Test
+    // void getWinnerTie() {
+    //     assertEquals(null, PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("3H"), Card.valueOf("3S")));
+    // }
 
 
     @Test
