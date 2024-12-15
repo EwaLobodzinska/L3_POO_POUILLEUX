@@ -106,8 +106,8 @@ public abstract class PouilleuxGameEngine {
             return winner;
         }
 
-        if (rankToRemove == 10) {
-            System.out.println("Paire de 10 ! Changement de sens !");
+        if (rankToRemove == 12) {
+            System.out.println("Paire de reines ! Changement de sens !");
             changePlayerTurn(players);
         }
 
