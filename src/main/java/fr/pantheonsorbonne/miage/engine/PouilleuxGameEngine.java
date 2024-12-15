@@ -6,6 +6,7 @@ import fr.pantheonsorbonne.miage.game.Deck;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Random;
 
 public abstract class PouilleuxGameEngine {
 
@@ -36,9 +37,10 @@ public abstract class PouilleuxGameEngine {
         final Deque<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
 
+        int rankToRemove = 0;
         for (String player : players) {
             while (findPairs(player) != null) {
-                removePairsFromPlayer(player);
+                rankToRemove = removePairsFromPlayer(player);
             }
         }
 
@@ -109,6 +111,11 @@ public abstract class PouilleuxGameEngine {
             skipNextPlayerTurn(players);
         }
 
+        if (rankToRemove == 11) {
+            System.out.println("Paire de valets ! Piocher une carte supplemantaire !");
+            getSecondCard(firstPlayerInRound, players);
+        }
+
         boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
         if (!checkCardOrGameOver) {
             winner = firstPlayerInRound;
@@ -156,5 +163,18 @@ public abstract class PouilleuxGameEngine {
     protected void skipNextPlayerTurn(Deque<String> players) {
         String skippedPlayer = players.pollFirst();
         players.addLast(skippedPlayer);
+    }
+
+    protected String getSecondCard(String player, Deque<String> players){
+        List<String> listPlayers = new ArrayList<>(players);
+        Random rand = new Random();
+        String secondPlayer;
+        int indexSecondPlayer;
+        do {
+            indexSecondPlayer = rand.nextInt(players.size());
+            secondPlayer = listPlayers.get(indexSecondPlayer);
+        }
+        while (secondPlayer.equals(player));
+        return playRound(players, player, secondPlayer);
     }
 }
