@@ -99,13 +99,6 @@ public abstract class PouilleuxGameEngine {
         // verifier la paire
         rankToRemove = removePairsFromPlayer(firstPlayerInRound);
 
-        boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
-        if (!checkCardOrGameOver) {
-            winner = firstPlayerInRound;
-            // players.remove(secondPlayerInRound);
-            return winner;
-        }
-
         if (rankToRemove == 12) {
             System.out.println("Paire de reines ! Changement de sens !");
             changePlayerTurn(players);
@@ -114,6 +107,13 @@ public abstract class PouilleuxGameEngine {
         if (rankToRemove == 10) {
             System.out.println("Paire de 10 ! Le joueur suivant saute son tour !");
             skipNextPlayerTurn(players);
+        }
+
+        boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
+        if (!checkCardOrGameOver) {
+            winner = firstPlayerInRound;
+            // players.remove(secondPlayerInRound);
+            return winner;
         }
         
         // otherwise we do another round.
