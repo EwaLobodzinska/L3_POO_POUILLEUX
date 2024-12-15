@@ -2,7 +2,7 @@ package fr.pantheonsorbonne.miage.engine.local;
 
 import fr.pantheonsorbonne.miage.engine.PouilleuxGameEngine;
 import fr.pantheonsorbonne.miage.exception.NoMoreCardException;
-import fr.pantheonsorbonne.miage.game.Card; 
+import fr.pantheonsorbonne.miage.game.Card;
 import fr.pantheonsorbonne.miage.game.Deck;
 import fr.pantheonsorbonne.miage.game.RandomDeck;
 
@@ -26,32 +26,38 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     }
 
     public static void main(String... args) {
-        LocalPouilleuxGame localPouilleuxGame = new LocalPouilleuxGame(new RandomDeck(), Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
+        LocalPouilleuxGame localPouilleuxGame = new LocalPouilleuxGame(new RandomDeck(),
+                Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
         localPouilleuxGame.play();
         System.exit(0);
 
     }
-
 
     @Override
     protected List<String> getInitialPlayers() {
         return this.initialPlayers;
     }
 
-    @Override 
+    @Override
     protected void giveCardsToPlayer(String playerName, String hand) {
         List<Card> cards = Arrays.asList(Card.stringToCards(hand));
         this.giveCardsToPlayer(cards, playerName);
     }
 
     @Override
-    protected String playRound(Queue<String> players, String playerA, String playerB) {
-        System.out.println("New round:");
-        System.out.println(this.playerCards.keySet().stream().filter(p -> !this.playerCards.get(p).isEmpty()).map(p -> p + " has " + this.playerCards.get(p).stream().map(c -> c.toFancyString()).collect(Collectors.joining(" "))).collect(Collectors.joining("\n")));
+    protected String playRound(Deque<String> players, String playerA, String playerB) {
+        // System.out.println("New round:");
+        System.out
+                .println(
+                        this.playerCards
+                                .keySet().stream().filter(p -> !this.playerCards.get(p).isEmpty()).map(
+                                        p -> p + " has "
+                                                + this.playerCards.get(p).stream().map(c -> c.toFancyString())
+                                                        .collect(Collectors.joining(" ")))
+                                .collect(Collectors.joining("\n")));
         System.out.println();
         System.out.println("Round of : " + playerA);
         return super.playRound(players, playerA, playerB);
-
     }
 
     @Override
@@ -109,34 +115,36 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     }
 
     @Override
-    protected void removePairsFromPlayer(String player) {       
+    protected int removePairsFromPlayer(String player) {
         List<Card> pairs = findPairs(player);
+        int rankToRemove = 0;
 
         // if (pairs == null || pairs.size() != 2) {
-        //     return; // No valid pair to remove
+        // return; // No valid pair to remove
         // }
 
         if (pairs != null && pairs.size() == 2) {
             Queue<Card> originalQueue = this.playerCards.get(player);
             // if (originalQueue == null){
-            //     return;
+            // return;
             // }
+
             Queue<Card> updatedQueue = new LinkedList<>();
-            int rankToRemove = pairs.get(0).getValue().getRank();
+            rankToRemove = pairs.get(0).getValue().getRank();
             int[] codeToRemove = {
-                pairs.get(0).getColor().getCode(), 
-                pairs.get(1).getColor().getCode()};
+                    pairs.get(0).getColor().getCode(),
+                    pairs.get(1).getColor().getCode() };
 
             for (Card card : originalQueue) {
-                    if (card.getValue().getRank() != rankToRemove || 
-                    (card.getColor().getCode() != codeToRemove[0]  && card.getColor().getCode() != codeToRemove[1])) {
-                     updatedQueue.add(card);
-                 }
-                    else{
-                        System.out.println(card.toString());
-                    }
+                if (card.getValue().getRank() != rankToRemove ||
+                        (card.getColor().getCode() != codeToRemove[0]
+                                && card.getColor().getCode() != codeToRemove[1])) {
+                    updatedQueue.add(card);
+                } else {
+                    System.out.println(card.toString());
                 }
-            //shuffle cards --> methode?
+            }
+            // shuffle cards --> methode?
             List<Card> shuffleCards = new ArrayList<>(updatedQueue);
             Collections.shuffle(shuffleCards);
             updatedQueue.clear();
@@ -144,13 +152,14 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
 
             this.playerCards.put(player, updatedQueue);
         }
+        return rankToRemove;
     }
 
     @Override
     protected List<Card> findPairs(String player) {
         Queue<Card> cards = this.playerCards.get(player);
         // if(cards == null){
-        //     return null;
+        // return null;
         // }
         Map<Integer, Integer> blackCardCount = new HashMap<>();
         Map<Integer, Integer> redCardCount = new HashMap<>();
@@ -161,37 +170,38 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
             int cardCode = card.getColor().getCode();
 
             if (cardCode == 127137 || cardCode == 127137 + 16 * 3) {
-                if(blackCardCount.containsKey(cardRank)){
+                if (blackCardCount.containsKey(cardRank)) {
                     blackCardCount.put(cardRank, blackCardCount.get(cardRank) + 1);
-                }else{
+                } else {
                     blackCardCount.put(cardRank, 1);
                 }
-                //blackCardCount.put(cardRank, blackCardCount.getOrDefault(cardRank, 0) + 1);
+                // blackCardCount.put(cardRank, blackCardCount.getOrDefault(cardRank, 0) + 1);
 
                 if (blackCardCount.get(cardRank) == 2) {
-                    for(Card cardPair : cards){
-                        if(cardPair.getValue().getRank() == cardRank && (cardPair.getColor().getCode() == 127137 || cardPair.getColor().getCode() == 127137 + 16 * 3)){
+                    for (Card cardPair : cards) {
+                        if (cardPair.getValue().getRank() == cardRank && (cardPair.getColor().getCode() == 127137
+                                || cardPair.getColor().getCode() == 127137 + 16 * 3)) {
                             pair.add(cardPair);
-                            if (pair.size() == 2){
+                            if (pair.size() == 2) {
                                 return pair; // 0 for black
                             }
                         }
-                    }  
+                    }
                 }
-            }
-            else if (cardCode == 127137 + 16 || cardCode == 127137 + 16 * 2) {
-                if(redCardCount.containsKey(cardRank)){
+            } else if (cardCode == 127137 + 16 || cardCode == 127137 + 16 * 2) {
+                if (redCardCount.containsKey(cardRank)) {
                     redCardCount.put(cardRank, redCardCount.get(cardRank) + 1);
-                }else{
+                } else {
                     redCardCount.put(cardRank, 1);
                 }
-                //redCardCount.put(cardRank, redCardCount.getOrDefault(cardRank, 0) + 1);
+                // redCardCount.put(cardRank, redCardCount.getOrDefault(cardRank, 0) + 1);
 
                 if (redCardCount.get(cardRank) == 2) {
-                    for(Card cardPair : cards){
-                        if(cardPair.getValue().getRank() == cardRank && (cardPair.getColor().getCode() == 127137 +16 || cardPair.getColor().getCode() == 127137 + 16 * 2)){
+                    for (Card cardPair : cards) {
+                        if (cardPair.getValue().getRank() == cardRank && (cardPair.getColor().getCode() == 127137 + 16
+                                || cardPair.getColor().getCode() == 127137 + 16 * 2)) {
                             pair.add(cardPair);
-                            if (pair.size() == 2){
+                            if (pair.size() == 2) {
                                 return pair;
                             }
                         }
@@ -199,14 +209,14 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                 }
             }
         }
-        return null; 
+        return null;
     }
 
     @Override
     protected boolean checkLoser(String player) {
         Queue<Card> cards = this.playerCards.get(player);
-        for(Card card : cards){
-            if(card.getColor().getCode() == 127137 && card.getValue().getRank() == 11){
+        for (Card card : cards) {
+            if (card.getColor().getCode() == 127137 && card.getValue().getRank() == 11) {
                 return true;
             }
         }
