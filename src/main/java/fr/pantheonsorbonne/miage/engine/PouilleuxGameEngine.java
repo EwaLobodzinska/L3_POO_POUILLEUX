@@ -36,9 +36,10 @@ public abstract class PouilleuxGameEngine {
         final Deque<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
 
+        int rankToRemove = 0;
         for (String player : players) {
             while (findPairs(player) != null) {
-                removePairsFromPlayer(player);
+                rankToRemove = removePairsFromPlayer(player);
             }
         }
 
