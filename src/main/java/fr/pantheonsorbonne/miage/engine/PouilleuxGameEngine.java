@@ -6,7 +6,6 @@ import fr.pantheonsorbonne.miage.game.Deck;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Random;
 
 public abstract class PouilleuxGameEngine {
 
@@ -37,10 +36,11 @@ public abstract class PouilleuxGameEngine {
         final Deque<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
 
+        Map<Integer, List<Integer>> tourColor = new HashMap<>();
         int rankToRemove = 0;
         for (String player : players) {
             while (findPairs(player) != null) {
-                rankToRemove = removePairsFromPlayer(player);
+                rankToRemove = removePairsFromPlayer(player, null);
             }
         }
 
@@ -48,13 +48,25 @@ public abstract class PouilleuxGameEngine {
         // int initialPlayerSize = players.size();
 
         while (true) {
+            if(!tourColor.isEmpty()){
+                int tourColorKey = tourColor.keySet().iterator().next();
+                if(tourColorKey > 0){
+                    List<Integer> colors = tourColor.get(tourColorKey);
+                    tourColor.clear();
+                    tourColor.put(tourColorKey - 1, colors);
+                    System.out.println("Respect the color !");
+                } else {
+                    tourColor.clear();
+                }  
+            }
+
             String firstPlayerInRound = players.poll();
             players.addLast(firstPlayerInRound);
 
             String secondPlayerInRound = players.poll();
             players.addFirst(secondPlayerInRound);
             String play;
-            if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound)) != "") {
+            if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound, tourColor)) != "") {
                 winner = play;
                 declareWinner(winner);
                 for (String player : players) {
@@ -75,7 +87,12 @@ public abstract class PouilleuxGameEngine {
 
     protected abstract void giveCardsToPlayer(String playerName, String hand);
 
-    protected String playRound(Deque<String> players, String firstPlayerInRound, String secondPlayerInRound) {
+    protected String playRound(Deque<String> players, String firstPlayerInRound, String secondPlayerInRound, Map<Integer, List<Integer>> tourColor) {
+        List<Integer> tourColorValue = null;
+        if(!tourColor.isEmpty()){
+            tourColorValue = tourColor.values().iterator().next();
+        }
+        
         String winner;
         int rankToRemove;
         // here, we try to get the first player card
@@ -99,7 +116,7 @@ public abstract class PouilleuxGameEngine {
         }
 
         // verifier la paire
-        rankToRemove = removePairsFromPlayer(firstPlayerInRound);
+        rankToRemove = removePairsFromPlayer(firstPlayerInRound, tourColorValue);
 
         if (rankToRemove == 10) {
             System.out.println("Paire de 10 ! Le joueur suivant saute son tour !");
@@ -108,7 +125,8 @@ public abstract class PouilleuxGameEngine {
 
         if (rankToRemove == 11) {
             System.out.println("Paire de valets ! Piocher une carte supplemantaire !");
-            getSecondCard(firstPlayerInRound, players);
+            getSecondCard(firstPlayerInRound, players, tourColor);
+
         }
 
         if (rankToRemove == 12) {
@@ -119,6 +137,12 @@ public abstract class PouilleuxGameEngine {
         if (rankToRemove == 13) {
             System.out.println("Paire de rois ! Changement de cartes !");
             changeCards(players);
+        }
+
+        if (rankToRemove == 14) {
+            System.out.println("Paire d'as' ! Couleur defini pour la prochaine tour !");
+            tourColor.clear();
+            tourColor.putAll(defineColor(players));
         }
 
         boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
@@ -144,7 +168,7 @@ public abstract class PouilleuxGameEngine {
 
     protected abstract Card getCardFromPlayer(String player) throws NoMoreCardException;
 
-    protected abstract int removePairsFromPlayer(String player);
+    protected abstract int removePairsFromPlayer(String player, List<Integer> tourColors);
 
     protected abstract void giveOneCardToPlayer(Card card, String player);
 
@@ -170,7 +194,8 @@ public abstract class PouilleuxGameEngine {
         players.addLast(skippedPlayer);
     }
 
-    protected String getSecondCard(String player, Deque<String> players){
+    //void??
+    protected String getSecondCard(String player, Deque<String> players, Map<Integer, List<Integer>> tourColor){
         List<String> listPlayers = new ArrayList<>(players);
         Random rand = new Random();
         String secondPlayer;
@@ -180,7 +205,11 @@ public abstract class PouilleuxGameEngine {
             secondPlayer = listPlayers.get(indexSecondPlayer);
         }
         while (secondPlayer.equals(player));
-        return playRound(players, player, secondPlayer);
+        if (!tourColor.isEmpty()){
+            int tourColorKey = tourColor.keySet().iterator().next();
+            tourColorKey++;
+        }
+        return playRound(players, player, secondPlayer, tourColor);
     }
 
     protected void changeCards(Deque<String> players){
@@ -207,5 +236,24 @@ public abstract class PouilleuxGameEngine {
         Card cardToSecondPlayer = getCardOrGameOver(firstPlayer);
         System.out.println(cardToSecondPlayer.toString());
         giveOneCardToPlayer(cardToSecondPlayer, secondPlayer);
+    }
+
+    protected Map<Integer, List<Integer>> defineColor(Deque<String> players){
+        Map<Integer, List<Integer>> tourColor = new HashMap<>();
+        Random rand = new Random();
+        int color = rand.nextInt(0,2);
+        List<Integer> colorList = new ArrayList<>();
+        if(color == 0){
+            colorList.add(127137);
+            colorList.add(127137 + 16 * 3);
+            tourColor.put(players.size(), colorList);
+            System.out.println("The color is black");
+        } else{
+            colorList.add(127137 + 16);
+            colorList.add(127137 + 16 * 2);
+            tourColor.put(players.size(), colorList);
+            System.out.println("The color is red");
+        }
+        return tourColor;
     }
 }

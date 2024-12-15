@@ -45,7 +45,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     }
 
     @Override
-    protected String playRound(Deque<String> players, String playerA, String playerB) {
+    protected String playRound(Deque<String> players, String playerA, String playerB, Map<Integer, List<Integer>> tourColor) {
         // System.out.println("New round:");
         System.out
                 .println(
@@ -57,7 +57,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                                 .collect(Collectors.joining("\n")));
         System.out.println();
         System.out.println("Round of : " + playerA);
-        return super.playRound(players, playerA, playerB);
+        return super.playRound(players, playerA, playerB, tourColor);
     }
 
     @Override
@@ -111,11 +111,19 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
 
     @Override
     protected void giveOneCardToPlayer(Card card, String player) {
-        this.playerCards.get(player).add(card);
+        Queue<Card> cards = this.playerCards.get(player);
+        cards.add(card);
+        // shuffle cards --> methode?
+        List<Card> shuffleCards = new ArrayList<>(cards);
+        Collections.shuffle(shuffleCards);
+        cards.clear();
+        cards.addAll(shuffleCards);
+
+        this.playerCards.put(player, cards);
     }
 
     @Override
-    protected int removePairsFromPlayer(String player) {
+    protected int removePairsFromPlayer(String player, List<Integer> tourColor) {
         List<Card> pairs = findPairs(player);
         int rankToRemove = 0;
 
@@ -138,17 +146,21 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
             for (Card card : originalQueue) {
                 if (card.getValue().getRank() != rankToRemove ||
                         (card.getColor().getCode() != codeToRemove[0]
-                                && card.getColor().getCode() != codeToRemove[1])) {
+                                && card.getColor().getCode() != codeToRemove[1])){
+                    updatedQueue.add(card);
+                } else if(tourColor != null && 
+                        (card.getColor().getCode() == tourColor.get(0) 
+                                || card.getColor().getCode() == tourColor.get(1))){
                     updatedQueue.add(card);
                 } else {
                     System.out.println(card.toString());
                 }
             }
             // shuffle cards --> methode?
-            List<Card> shuffleCards = new ArrayList<>(updatedQueue);
-            Collections.shuffle(shuffleCards);
-            updatedQueue.clear();
-            updatedQueue.addAll(shuffleCards);
+            // List<Card> shuffleCards = new ArrayList<>(updatedQueue);
+            // Collections.shuffle(shuffleCards);
+            // updatedQueue.clear();
+            // updatedQueue.addAll(shuffleCards);
 
             this.playerCards.put(player, updatedQueue);
         }

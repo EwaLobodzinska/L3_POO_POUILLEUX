@@ -14,6 +14,5 @@ public class PaireAce extends SpecialPaire {
     public String getFunctionName(){
         return "Define the tour color";
     }
-
     
 }
