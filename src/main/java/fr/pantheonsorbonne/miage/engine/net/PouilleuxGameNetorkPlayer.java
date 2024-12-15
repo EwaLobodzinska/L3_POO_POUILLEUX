@@ -19,16 +19,16 @@ public class PouilleuxGameNetorkPlayer {
     static final String playerId = "Player-" + new Random().nextInt();
     static final Deque<Card> hand = new LinkedList<>();
     static final PlayerFacade playerFacade = Facade.getFacade();
-    static Game war;
+    static Game pouilleux;
 
     public static void main(String[] args) {
 
         playerFacade.waitReady();
         playerFacade.createNewPlayer(playerId);
-        war = playerFacade.autoJoinGame("POUILLEUX");
+        pouilleux = playerFacade.autoJoinGame("POUILLEUX");
         while (true) {
 
-            GameCommand command = playerFacade.receiveGameCommand(war);
+            GameCommand command = playerFacade.receiveGameCommand(pouilleux);
             switch (command.name()) {
                 case "cardsForYou":
                     handleCardsForYou(command);
@@ -56,9 +56,9 @@ public class PouilleuxGameNetorkPlayer {
     private static void handlePlayACard(GameCommand command) {
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                playerFacade.sendGameCommandToAll(war, new GameCommand("card", hand.pollFirst().toString()));
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card", hand.pollFirst().toString()));
             } else {
-                playerFacade.sendGameCommandToAll(war, new GameCommand("outOfCard", playerId));
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCard", playerId));
             }
         }
     }

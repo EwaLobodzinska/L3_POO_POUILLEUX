@@ -20,13 +20,13 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
     private final HostFacade hostFacade;
     private final Set<String> players;
-    private final Game war;
+    private final Game pouilleux;
 
     public PouilleuxGameNetworkEngine(Deck deck, HostFacade hostFacade, Set<String> players, fr.pantheonsorbonne.miage.model.Game war) {
         super(deck);
         this.hostFacade = hostFacade;
         this.players = players;
-        this.war = war;
+        this.pouilleux = war;
     }
 
     public static void main(String[] args) {
@@ -52,33 +52,33 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
     @Override
     protected List<String> getInitialPlayers() {
-        return new ArrayList<>(this.war.getPlayers());
+        return new ArrayList<>(this.pouilleux.getPlayers());
     }
 
     @Override
     protected void giveCardsToPlayer(String playerName, String hand) {
-        hostFacade.sendGameCommandToPlayer(war, playerName, new GameCommand("cardsForYou", hand));
+        hostFacade.sendGameCommandToPlayer(pouilleux, playerName, new GameCommand("cardsForYou", hand));
     }
 
 
     @Override
     protected void declareWinner(String winner) {
-        hostFacade.sendGameCommandToPlayer(war, winner, new GameCommand("gameOver", "win"));
+        hostFacade.sendGameCommandToPlayer(pouilleux, winner, new GameCommand("gameOver", "win"));
     }
 
     @Override
-    protected Card getCardOrGameOver(String cardProviderPlayer, String cardProviderPlayerOpponent) {
+    protected Card getCardOrGameOver(String cardProviderPlayer) {
 
         try {
             return getCardFromPlayer(cardProviderPlayer);
         } catch (NoMoreCardException nmc) {
             //contestant A is out of cards
             //we send him a gameover
-            hostFacade.sendGameCommandToPlayer(war, cardProviderPlayer, new GameCommand("gameOver"));
+            hostFacade.sendGameCommandToPlayer(pouilleux, cardProviderPlayer, new GameCommand("gameOver"));
             //remove him from the queue so he won't play again
             players.remove(cardProviderPlayer);
             //give back all the cards for this round to the second players
-            hostFacade.sendGameCommandToPlayer(war, cardProviderPlayerOpponent, new GameCommand("cardsForYou", Card.cardsToString(leftOverCard.toArray(new Card[leftOverCard.size()]))));
+            hostFacade.sendGameCommandToPlayer(pouilleux, cardProviderPlayerOpponent, new GameCommand("cardsForYou", Card.cardsToString(leftOverCard.toArray(new Card[leftOverCard.size()]))));
             return null;
         }
 
@@ -90,13 +90,13 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         cards.addAll(roundStack);
         //shuffle the round deck so we are not stuck
         Collections.shuffle(cards);
-        hostFacade.sendGameCommandToPlayer(war, winner, new GameCommand("cardsForYou", Card.cardsToString(cards.toArray(new Card[cards.size()]))));
+        hostFacade.sendGameCommandToPlayer(pouilleux, winner, new GameCommand("cardsForYou", Card.cardsToString(cards.toArray(new Card[cards.size()]))));
     }
 
     @Override
     protected Card getCardFromPlayer(String player) throws NoMoreCardException {
-        hostFacade.sendGameCommandToPlayer(war, player, new GameCommand("playACard"));
-        GameCommand expectedCard = hostFacade.receiveGameCommand(war);
+        hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("playACard"));
+        GameCommand expectedCard = hostFacade.receiveGameCommand(pouilleux);
         if (expectedCard.name().equals("card")) {
             return Card.valueOf(expectedCard.body());
         }
@@ -116,9 +116,27 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
     protected void removePairsFromPlayer(String player){
     }
 
-    protected int findPairs(String player){ 
-            return 0;
+    @Override
+    protected List<Card> findPairs(String player){ 
+            return null;
          
     }
+
+    @Override
+    protected boolean checkLoser(String player){
+        return false;
+    }
+
+    @Override
+    protected void declareLoser(String loser){
+
+    }
+
+    @Override
+    protected boolean checkCardOrGameOver(String cardProviderPlayer){
+        return false;
+    }
+
+
 
 }

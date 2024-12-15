@@ -48,7 +48,6 @@ public abstract class PouilleuxGameEngine {
         //int initialPlayerSize = players.size();
 
         while (true) {
-
             String firstPlayerInRound = players.poll();
             players.offer(firstPlayerInRound);
 
