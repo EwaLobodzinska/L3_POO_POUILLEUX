@@ -101,11 +101,6 @@ public abstract class PouilleuxGameEngine {
         // verifier la paire
         rankToRemove = removePairsFromPlayer(firstPlayerInRound);
 
-        if (rankToRemove == 12) {
-            System.out.println("Paire de reines ! Changement de sens !");
-            changePlayerTurn(players);
-        }
-
         if (rankToRemove == 10) {
             System.out.println("Paire de 10 ! Le joueur suivant saute son tour !");
             skipNextPlayerTurn(players);
@@ -114,6 +109,16 @@ public abstract class PouilleuxGameEngine {
         if (rankToRemove == 11) {
             System.out.println("Paire de valets ! Piocher une carte supplemantaire !");
             getSecondCard(firstPlayerInRound, players);
+        }
+
+        if (rankToRemove == 12) {
+            System.out.println("Paire de reines ! Changement de sens !");
+            changePlayerTurn(players);
+        }
+
+        if (rankToRemove == 13) {
+            System.out.println("Paire de rois ! Changement de cartes !");
+            changeCards(players);
         }
 
         boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
@@ -176,5 +181,31 @@ public abstract class PouilleuxGameEngine {
         }
         while (secondPlayer.equals(player));
         return playRound(players, player, secondPlayer);
+    }
+
+    protected void changeCards(Deque<String> players){
+        List<String> listPlayers = new ArrayList<>(players);
+        Random rand = new Random();
+
+        int indexFirstPlayer = rand.nextInt(players.size());
+        String firstPlayer = listPlayers.get(indexFirstPlayer);
+        System.out.println(firstPlayer);
+
+        int indexSecondPlayer;
+        String secondPlayer;
+        do {
+            indexSecondPlayer = rand.nextInt(players.size()) ;
+            secondPlayer = listPlayers.get(indexSecondPlayer);
+        }
+        while (secondPlayer.equals(firstPlayer));
+        System.out.println(secondPlayer);
+
+        Card cardToFirstPlayer = getCardOrGameOver(secondPlayer);
+        System.out.println(cardToFirstPlayer.toString());
+        giveOneCardToPlayer(cardToFirstPlayer, firstPlayer);
+
+        Card cardToSecondPlayer = getCardOrGameOver(firstPlayer);
+        System.out.println(cardToSecondPlayer.toString());
+        giveOneCardToPlayer(cardToSecondPlayer, secondPlayer);
     }
 }
