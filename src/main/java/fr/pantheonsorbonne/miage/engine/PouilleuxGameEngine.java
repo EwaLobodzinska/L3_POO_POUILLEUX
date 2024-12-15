@@ -34,7 +34,7 @@ public abstract class PouilleuxGameEngine {
         giveCardsToPlayer(playerName, hand);
         }
 
-        final Queue<String> players = new LinkedList<>();
+        final Deque<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
         
 
@@ -49,10 +49,10 @@ public abstract class PouilleuxGameEngine {
 
         while (true) {
             String firstPlayerInRound = players.poll();
-            players.offer(firstPlayerInRound);
+            players.addLast(firstPlayerInRound);
 
             String secondPlayerInRound = players.poll();
-            players.offer(secondPlayerInRound);
+            players.addFirst(secondPlayerInRound);
             String play;
             if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound)) != ""){
                 winner = play;
