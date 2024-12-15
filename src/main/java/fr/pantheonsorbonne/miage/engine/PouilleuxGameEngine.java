@@ -111,6 +111,11 @@ public abstract class PouilleuxGameEngine {
             changePlayerTurn(players);
         }
 
+        if (rankToRemove == 10) {
+            System.out.println("Paire de 10 ! Le joueur suivant saute son tour !");
+            skipNextPlayerTurn(players);
+        }
+        
         // otherwise we do another round.
         return "";
     }
@@ -146,5 +151,10 @@ public abstract class PouilleuxGameEngine {
         }
 
         players.addAll(reversedPlayers);
+    }
+
+    protected void skipNextPlayerTurn(Deque<String> players) {
+        String skippedPlayer = players.pollFirst();
+        players.addLast(skippedPlayer);
     }
 }
