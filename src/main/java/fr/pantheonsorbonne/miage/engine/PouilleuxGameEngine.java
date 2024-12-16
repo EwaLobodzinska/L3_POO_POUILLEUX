@@ -36,16 +36,23 @@ public abstract class PouilleuxGameEngine {
         final Deque<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
 
-        Map<Integer, List<Integer>> tourColor = new HashMap<>();
-        int rankToRemove = 0;
         for (String player : players) {
-            while (findPairs(player) != null) {
-                rankToRemove = removePairsFromPlayer(player, null);
+            HashMap<Integer, List<Card>> pairs = new HashMap<>();
+            List<Card> pair;
+            while ((pair = findPairs(player)) != null) {
+                int rankToRemove = removePairsFromPlayer(player, null);
+                pairs.put(rankToRemove, pair);
             }
+            for(Integer rankRemoved : pairs.keySet()){
+                if(rankRemoved != null && (rankRemoved == 10 || rankRemoved == 11 || rankRemoved == 12 || rankRemoved == 13 || rankRemoved == 14)){
+                    Card[] specialPairTable = {pairs.get(rankRemoved).get(0), pairs.get(rankRemoved).get(1)};
+                    String specialPairString = Card.cardsToString(specialPairTable);
+                    giveCardsToPlayer(player, specialPairString);
+                }
+            }    
         }
 
-        String winner = "";
-        // int initialPlayerSize = players.size();
+        Map<Integer, List<Integer>> tourColor = new HashMap<>();
 
         while (true) {
             if(!tourColor.isEmpty()){
@@ -67,7 +74,7 @@ public abstract class PouilleuxGameEngine {
             players.addFirst(secondPlayerInRound);
             String play;
             if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound, tourColor)) != "") {
-                winner = play;
+                String winner = play;
                 declareWinner(winner);
                 for (String player : players) {
                     if (player != winner && checkLoser(player)) {
@@ -76,11 +83,7 @@ public abstract class PouilleuxGameEngine {
                 }
                 break;
             }
-
         }
-        // since we've left the loop, we have only 1 player left: the winner
-        // send him the gameover and leave
-
     }
 
     protected abstract List<String> getInitialPlayers();
@@ -94,13 +97,10 @@ public abstract class PouilleuxGameEngine {
         }
         
         String winner;
-        int rankToRemove;
-        // here, we try to get the first player card
+
         Card cardToFirstPlayer = getCardOrGameOver(secondPlayerInRound);
         if (cardToFirstPlayer == null) {
-            // secondPlayerInRound --> winner
             winner = secondPlayerInRound;
-            // players.remove(firstPlayerInRound);
             return winner;
         }
 
@@ -109,14 +109,11 @@ public abstract class PouilleuxGameEngine {
 
         boolean checkCardOrGameOverSecond = checkCardOrGameOver(secondPlayerInRound);
         if (!checkCardOrGameOverSecond) {
-            // secondPlayerInRound --> winner
             winner = secondPlayerInRound;
-            // players.remove(firstPlayerInRound);
             return winner;
         }
 
-        // verifier la paire
-        rankToRemove = removePairsFromPlayer(firstPlayerInRound, tourColorValue);
+        int rankToRemove = removePairsFromPlayer(firstPlayerInRound, tourColorValue);
 
         if (rankToRemove == 10) {
             System.out.println("Paire de 10 ! Le joueur suivant saute son tour !");
@@ -147,11 +144,9 @@ public abstract class PouilleuxGameEngine {
         boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
         if (!checkCardOrGameOver) {
             winner = firstPlayerInRound;
-            // players.remove(secondPlayerInRound);
             return winner;
         }
         
-        // otherwise we do another round.
         return "";
     }
 
@@ -193,7 +188,6 @@ public abstract class PouilleuxGameEngine {
         players.addLast(skippedPlayer);
     }
 
-    //void??
     protected String getSecondCard(String player, Deque<String> players, Map<Integer, List<Integer>> tourColor){
         List<String> listPlayers = new ArrayList<>(players);
         Random rand = new Random();
