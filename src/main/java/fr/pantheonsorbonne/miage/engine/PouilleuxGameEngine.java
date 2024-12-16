@@ -231,10 +231,10 @@ public abstract class PouilleuxGameEngine {
 
         Card cardToFirstPlayer = getCardOrGameOver(secondPlayer);
         System.out.println(cardToFirstPlayer.toString());
-        giveOneCardToPlayer(cardToFirstPlayer, firstPlayer);
-
         Card cardToSecondPlayer = getCardOrGameOver(firstPlayer);
         System.out.println(cardToSecondPlayer.toString());
+
+        giveOneCardToPlayer(cardToFirstPlayer, firstPlayer);
         giveOneCardToPlayer(cardToSecondPlayer, secondPlayer);
     }
 
