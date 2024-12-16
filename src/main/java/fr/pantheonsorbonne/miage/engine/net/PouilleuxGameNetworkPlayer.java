@@ -7,6 +7,7 @@ import fr.pantheonsorbonne.miage.model.Game;
 import fr.pantheonsorbonne.miage.model.GameCommand;
 
 import java.util.Deque;
+import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -14,10 +15,10 @@ import java.util.stream.Collectors;
 /**
  * this is the player part of the network version of the war game
  */
-public class PouilleuxGameNetorkPlayer {
+public class PouilleuxGameNetworkPlayer {
 
     static final String playerId = "Player-" + new Random().nextInt();
-    static final Deque<Card> hand = new LinkedList<>();
+    static final Queue<Card> hand = new LinkedList<>();
     static final PlayerFacade playerFacade = Facade.getFacade();
     static Game pouilleux;
 
@@ -33,9 +34,17 @@ public class PouilleuxGameNetorkPlayer {
                 case "cardsForYou":
                     handleCardsForYou(command);
                     break;
-                case "playACard":
-                    System.out.println("I have " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
-                    handlePlayACard(command);
+                case "getACard":
+                    System.out.println("I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                    handleGetACard(command);
+                    break;
+                case "giveACard":
+                    System.out.println("I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                    handleCheckACard(command);
+                    break;
+                case "getAHand":
+                    System.out.println("My hand " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                    handleGetAHand(command);
                     break;
                 case "gameOver":
                     handleGameOverCommand(command);
@@ -48,17 +57,38 @@ public class PouilleuxGameNetorkPlayer {
     private static void handleCardsForYou(GameCommand command) {
 
         for (Card card : Card.stringToCards(command.body())) {
-            hand.offerLast(card);
+            hand.offer(card);
         }
 
     }
 
-    private static void handlePlayACard(GameCommand command) {
+    private static void handleGetACard(GameCommand command) {
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card", hand.pollFirst().toString()));
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card", hand.poll().toString()));
             } else {
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCard", playerId));
+            }
+        }
+    }
+
+    private static void handleCheckACard(GameCommand command) {
+        
+        if (command.params().get("playerId").equals(playerId)) {
+            if (!hand.isEmpty()) {
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card", hand.peek().toString()));
+            } else {
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCard", playerId));
+            }
+        }
+    }
+
+    private static void handleGetAHand(GameCommand command) {
+        if (command.params().get("playerId").equals(playerId)) {
+            if (!hand.isEmpty()) {
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards", hand.toString()));
+            } else {
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCards", playerId));
             }
         }
     }
