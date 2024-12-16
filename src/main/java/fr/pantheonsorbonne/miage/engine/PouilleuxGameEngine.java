@@ -124,9 +124,8 @@ public abstract class PouilleuxGameEngine {
         }
 
         if (rankToRemove == 11) {
-            System.out.println("Paire de valets ! Piocher une carte supplemantaire !");
+            System.out.println("Paire de valets ! Piocher une carte supplémentaire !");
             getSecondCard(firstPlayerInRound, players, tourColor);
-
         }
 
         if (rankToRemove == 12) {
@@ -140,7 +139,7 @@ public abstract class PouilleuxGameEngine {
         }
 
         if (rankToRemove == 14) {
-            System.out.println("Paire d'as' ! Couleur defini pour la prochaine tour !");
+            System.out.println("Paire d'as ! Couleur définie pour le prochain tour !");
             tourColor.clear();
             tourColor.putAll(defineColor(players));
         }
