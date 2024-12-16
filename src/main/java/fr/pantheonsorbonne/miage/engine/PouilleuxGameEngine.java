@@ -31,7 +31,14 @@ public abstract class PouilleuxGameEngine {
             numberOfPlayers--;
             String hand = Card.cardsToString(cards);
             giveCardsToPlayer(playerName, hand);
+
+            System.out.print(playerName + " has ");
+            for (Card card : cards){
+                System.out.print(card.toFancyString() + " ");
+            }
+            System.out.println();
         }
+        System.out.println();
 
         final Deque<String> players = new LinkedList<>();
         players.addAll(this.getInitialPlayers());
@@ -61,7 +68,7 @@ public abstract class PouilleuxGameEngine {
                     List<Integer> colors = tourColor.get(tourColorKey);
                     tourColor.clear();
                     tourColor.put(tourColorKey - 1, colors);
-                    System.out.println("Respect the color !");
+                    System.out.println("\nRespect the round color!");
                 } else {
                     tourColor.clear();
                 }  
@@ -103,8 +110,8 @@ public abstract class PouilleuxGameEngine {
             winner = secondPlayerInRound;
             return winner;
         }
-
-        System.out.println(cardToFirstPlayer.toString());
+        System.out.println(firstPlayerInRound + " took " + cardToFirstPlayer.toFancyString() + " from " + secondPlayerInRound);
+        //System.out.println(cardToFirstPlayer.toString());
         giveOneCardToPlayer(cardToFirstPlayer, firstPlayerInRound);
 
         boolean checkCardOrGameOverSecond = checkCardOrGameOver(secondPlayerInRound);
@@ -116,27 +123,27 @@ public abstract class PouilleuxGameEngine {
         int rankToRemove = removePairsFromPlayer(firstPlayerInRound, tourColorValue);
 
         if (rankToRemove == 10) {
-            System.out.println("Paire de 10 ! Le joueur suivant saute son tour !");
+            System.out.println("Pair of 10! Next player skips the tour!");
             skipNextPlayerTurn(players);
         }
 
         if (rankToRemove == 11) {
-            System.out.println("Paire de valets ! Piocher une carte supplémentaire !");
+            System.out.println("Pair of valets! Take an extra card!");
             getSecondCard(firstPlayerInRound, players, tourColor);
         }
 
         if (rankToRemove == 12) {
-            System.out.println("Paire de reines ! Changement de sens !");
+            System.out.println("Pair of Queens! Change the direction!");
             changePlayerTurn(players);
         }
 
         if (rankToRemove == 13) {
-            System.out.println("Paire de rois ! Changement de cartes !");
+            System.out.println("Pair of Kings! Card exchange !");
             changeCards(players);
         }
 
         if (rankToRemove == 14) {
-            System.out.println("Paire d'as ! Couleur définie pour le prochain tour !");
+            System.out.println("Pair of Ace! Color defined for the next round!");
             tourColor.clear();
             tourColor.putAll(defineColor(players));
         }
@@ -211,7 +218,7 @@ public abstract class PouilleuxGameEngine {
 
         int indexFirstPlayer = rand.nextInt(players.size());
         String firstPlayer = listPlayers.get(indexFirstPlayer);
-        System.out.println(firstPlayer);
+        //System.out.println(firstPlayer);
 
         int indexSecondPlayer;
         String secondPlayer;
@@ -220,12 +227,12 @@ public abstract class PouilleuxGameEngine {
             secondPlayer = listPlayers.get(indexSecondPlayer);
         }
         while (secondPlayer.equals(firstPlayer));
-        System.out.println(secondPlayer);
+        //System.out.println(secondPlayer);
 
         Card cardToFirstPlayer = getCardOrGameOver(secondPlayer);
-        System.out.println(cardToFirstPlayer.toString());
+        System.out.println(secondPlayer + " gives " + cardToFirstPlayer.toFancyString());
         Card cardToSecondPlayer = getCardOrGameOver(firstPlayer);
-        System.out.println(cardToSecondPlayer.toString());
+        System.out.println(firstPlayer + " gives " + cardToSecondPlayer.toFancyString());
 
         giveOneCardToPlayer(cardToFirstPlayer, firstPlayer);
         giveOneCardToPlayer(cardToSecondPlayer, secondPlayer);
@@ -240,12 +247,12 @@ public abstract class PouilleuxGameEngine {
             colorList.add(127137);
             colorList.add(127137 + 16 * 3);
             tourColor.put(players.size(), colorList);
-            System.out.println("The color is black");
+            System.out.println("Round color : black");
         } else{
             colorList.add(127137 + 16);
             colorList.add(127137 + 16 * 2);
             tourColor.put(players.size(), colorList);
-            System.out.println("The color is red");
+            System.out.println("Round color : red");
         }
         return tourColor;
     }

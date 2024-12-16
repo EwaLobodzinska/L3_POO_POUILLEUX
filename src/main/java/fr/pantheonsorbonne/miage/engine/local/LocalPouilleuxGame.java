@@ -27,7 +27,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
 
     public static void main(String... args) {
         LocalPouilleuxGame localPouilleuxGame = new LocalPouilleuxGame(new RandomDeck(),
-                Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
+                Arrays.asList("Player1", "Player2"));
         localPouilleuxGame.play();
         System.exit(0);
 
@@ -46,23 +46,23 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
 
     @Override
     protected String playRound(Deque<String> players, String playerA, String playerB, Map<Integer, List<Integer>> tourColor) {
-        // System.out.println("New round:");
+        System.out.println("\nRound of: " + playerA);
         System.out
                 .println(
                         this.playerCards
                                 .keySet().stream().filter(p -> !this.playerCards.get(p).isEmpty()).map(
-                                        p -> p + " has "
+                                        p -> p + " has now "
                                                 + this.playerCards.get(p).stream().map(c -> c.toFancyString())
                                                         .collect(Collectors.joining(" ")))
                                 .collect(Collectors.joining("\n")));
         System.out.println();
-        System.out.println("Round of : " + playerA);
+        //System.out.println("Round of : " + playerA);
         return super.playRound(players, playerA, playerB, tourColor);
     }
 
     @Override
     protected void declareWinner(String winner) {
-        System.out.println(winner + " has won!");
+        System.out.println("\n" + winner + " has won!");
     }
 
     @Override
@@ -126,6 +126,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     protected int removePairsFromPlayer(String player, List<Integer> tourColor) {
         List<Card> pairs = findPairs(player);
         int rankToRemove = 0;
+        boolean pairRemoved = false;
 
         if (pairs != null && pairs.size() == 2) {
             Queue<Card> originalQueue = this.playerCards.get(player);
@@ -145,12 +146,17 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                         (card.getColor().getCode() == tourColor.get(0) 
                                 || card.getColor().getCode() == tourColor.get(1))){
                     updatedQueue.add(card);
-                //} else {
-                } else if(rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 &&rankToRemove != 13 &&rankToRemove != 14){
-                    System.out.println(card.toString());
+                } else {
+                //} else if(rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 &&rankToRemove != 13 &&rankToRemove != 14){
+                    pairRemoved = true;
+                //System.out.println(card.toString());
                 }
             }
             this.playerCards.put(player, updatedQueue);
+
+            if(pairRemoved){
+                System.out.println(player + " found a pair: " + pairs.get(0).toFancyString() +" " + pairs.get(1).toFancyString());
+            }
         }
         return rankToRemove;
     }
