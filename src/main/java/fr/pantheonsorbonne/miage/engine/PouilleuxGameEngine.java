@@ -230,12 +230,14 @@ public abstract class PouilleuxGameEngine {
         //System.out.println(secondPlayer);
 
         Card cardToFirstPlayer = getCardOrGameOver(secondPlayer);
-        System.out.println(secondPlayer + " gives " + cardToFirstPlayer.toFancyString());
-        Card cardToSecondPlayer = getCardOrGameOver(firstPlayer);
-        System.out.println(firstPlayer + " gives " + cardToSecondPlayer.toFancyString());
+        if(cardToFirstPlayer != null){
+            System.out.println(secondPlayer + " gives " + cardToFirstPlayer.toFancyString());
+            Card cardToSecondPlayer = getCardOrGameOver(firstPlayer);
+            System.out.println(firstPlayer + " gives " + cardToSecondPlayer.toFancyString());
 
-        giveOneCardToPlayer(cardToFirstPlayer, firstPlayer);
-        giveOneCardToPlayer(cardToSecondPlayer, secondPlayer);
+            giveOneCardToPlayer(cardToFirstPlayer, firstPlayer);
+            giveOneCardToPlayer(cardToSecondPlayer, secondPlayer);
+        }
     }
 
     protected Map<Integer, List<Integer>> defineColor(Deque<String> players){
