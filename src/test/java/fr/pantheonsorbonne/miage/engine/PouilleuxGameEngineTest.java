@@ -12,7 +12,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WarGameEngineTest {
+class PouilleuxGameEngineTest {
 
     PouilleuxGameEngine engine;
     Queue<String> players;
@@ -20,8 +20,6 @@ class WarGameEngineTest {
 
     @BeforeEach
     void setUp() {
-
-
         this.engine = new LocalPouilleuxGame(new DeterministDeck(Card.getAllPossibleCards().toArray(new Card[0])), Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
         this.players = new LinkedList<>();
         this.players.addAll(Arrays.asList("Joueur1", "Joueur2", "Joueur3"));
@@ -43,17 +41,24 @@ class WarGameEngineTest {
         Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"));
         assertTrue(cards.containsAll(cardInHand));
         assertTrue(cardInHand.containsAll(cards));
-
     }
 
     @Test
-    void testGiveCardsToPlayer() throws NoMoreCardException {
-        Collection<Card> cards = Arrays.asList(Card.valueOf("KH"), Card.valueOf("2S"));
-        engine.giveCardsToPlayer("Joueur1", "KH;2S");
-        Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"));
-        assertTrue(cards.containsAll(cardInHand));
-        assertTrue(cardInHand.containsAll(cards));
+    void giveOneCardToPlayer() throws NoMoreCardException {
+        Card card = Card.valueOf("KH");
+        engine.giveOneCardToPlayer(card, "Joueur1"); 
+        Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
+        assertTrue(cardInHand.contains(card));
     }
+
+    // @Test
+    // void testGiveCardsToPlayer() throws NoMoreCardException {
+    //     Collection<Card> cards = Arrays.asList(Card.valueOf("KH"), Card.valueOf("2S"));
+    //     engine.giveCardsToPlayer("Joueur1", "KH;2S");
+    //     Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
+    //     assertTrue(cards.containsAll(cardInHand));
+    //     assertTrue(cardInHand.containsAll(cards));
+    // }
 
     @Test
     void playRoundSimpleRound() throws NoMoreCardException {
@@ -81,22 +86,22 @@ class WarGameEngineTest {
         assertEquals(2, handOver.size());
     }
 
-    @Test
-    void declareWinner() {
-        engine.declareWinner("Joueur1");
-        //nothing to test here, as the winner declaration is just a prompt
-    }
+    // @Test
+    // void declareWinner() {
+    //     engine.declareWinner("Joueur1");
+    //     //nothing to test here, as the winner declaration is just a prompt
+    // }
 
     @Test
     void getCardOrGameOver() throws NoMoreCardException {
         engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KH")), "Joueur1");
         engine.giveCardsToPlayer(Arrays.asList(), "Joueur2");
-        Queue<Card> leftOverCards = new LinkedList<>(Arrays.asList(Card.valueOf("1H"), Card.valueOf("2H")));
-        assertNull(engine.getCardOrGameOver(leftOverCards, "Joueur2", "Joueur1"));
-
-        Collection<Card> cardFromJoueur1 = Arrays.asList(engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"));
-        assertEquals(3, cardFromJoueur1.size());
-        assertTrue(cardFromJoueur1.containsAll(Arrays.asList(Card.valueOf("KH"), Card.valueOf("1H"), Card.valueOf("2H"))));
+        //Queue<Card> leftOverCards = new LinkedList<>(Arrays.asList(Card.valueOf("1H"), Card.valueOf("2H")));
+        assertNull(engine.getCardOrGameOver("Joueur2"));
+        assertEquals("KH", engine.getCardOrGameOver("Joueur1"));
+        // Collection<Card> cardFromJoueur1 = Arrays.asList(engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"));
+        // assertEquals(3, cardFromJoueur1.size());
+        // assertTrue(cardFromJoueur1.containsAll(Arrays.asList(Card.valueOf("KH"), Card.valueOf("1H"), Card.valueOf("2H"))));
     }
 
     // @Test

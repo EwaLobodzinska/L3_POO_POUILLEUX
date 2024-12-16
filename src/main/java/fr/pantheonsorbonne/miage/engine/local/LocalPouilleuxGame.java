@@ -113,7 +113,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     protected void giveOneCardToPlayer(Card card, String player) {
         Queue<Card> cards = this.playerCards.get(player);
         cards.add(card);
-        // shuffle cards --> methode?
+        
         List<Card> shuffleCards = new ArrayList<>(cards);
         Collections.shuffle(shuffleCards);
         cards.clear();
@@ -127,18 +127,11 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
         List<Card> pairs = findPairs(player);
         int rankToRemove = 0;
 
-        // if (pairs == null || pairs.size() != 2) {
-        // return; // No valid pair to remove
-        // }
-
         if (pairs != null && pairs.size() == 2) {
             Queue<Card> originalQueue = this.playerCards.get(player);
-            // if (originalQueue == null){
-            // return;
-            // }
-
             Queue<Card> updatedQueue = new LinkedList<>();
             rankToRemove = pairs.get(0).getValue().getRank();
+
             int[] codeToRemove = {
                     pairs.get(0).getColor().getCode(),
                     pairs.get(1).getColor().getCode() };
@@ -152,16 +145,11 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                         (card.getColor().getCode() == tourColor.get(0) 
                                 || card.getColor().getCode() == tourColor.get(1))){
                     updatedQueue.add(card);
-                } else {
+                //} else {
+                } else if(rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 &&rankToRemove != 13 &&rankToRemove != 14){
                     System.out.println(card.toString());
                 }
             }
-            // shuffle cards --> methode?
-            // List<Card> shuffleCards = new ArrayList<>(updatedQueue);
-            // Collections.shuffle(shuffleCards);
-            // updatedQueue.clear();
-            // updatedQueue.addAll(shuffleCards);
-
             this.playerCards.put(player, updatedQueue);
         }
         return rankToRemove;
@@ -170,9 +158,6 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     @Override
     protected List<Card> findPairs(String player) {
         Queue<Card> cards = this.playerCards.get(player);
-        // if(cards == null){
-        // return null;
-        // }
         Map<Integer, Integer> blackCardCount = new HashMap<>();
         Map<Integer, Integer> redCardCount = new HashMap<>();
         List<Card> pair = new ArrayList<>();
@@ -195,7 +180,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                                 || cardPair.getColor().getCode() == 127137 + 16 * 3)) {
                             pair.add(cardPair);
                             if (pair.size() == 2) {
-                                return pair; // 0 for black
+                                return pair; 
                             }
                         }
                     }

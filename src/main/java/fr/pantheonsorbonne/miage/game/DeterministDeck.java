@@ -9,11 +9,7 @@ public class DeterministDeck implements Deck {
     private final Queue<Card> cards = new LinkedList<>();
 
     public DeterministDeck(Card... cards) {
-        for (Card card : cards){
-            //don't add valet of club
-            if(card.getColor().getCode() != 127137 + 16 * 3 || card.getValue().getRank() != 11)
-                this.cards.add(card);
-        }
+        this.cards.addAll(Arrays.asList(cards));
     }
 
     @Override
