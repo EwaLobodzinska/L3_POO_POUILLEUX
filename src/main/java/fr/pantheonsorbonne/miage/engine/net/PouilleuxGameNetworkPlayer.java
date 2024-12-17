@@ -28,43 +28,53 @@ public class PouilleuxGameNetworkPlayer {
         playerFacade.createNewPlayer(playerId);
         pouilleux = playerFacade.autoJoinGame("POUILLEUX");
         while (true) {
-
             GameCommand command = playerFacade.receiveGameCommand(pouilleux);
             switch (command.name()) {
                 case "cardsForYou":
                     handleCardsForYou(command);
                     break;
                 case "getACard":
-                    System.out.println("I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                    System.out.println(
+                            "I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
                     handleGetACard(command);
                     break;
                 case "giveACard":
-                    System.out.println("I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                    System.out.println(
+                            "I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
                     handleCheckACard(command);
                     break;
                 case "getAHand":
-                    System.out.println("My hand " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                    System.out.println(
+                            "My hand " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
                     handleGetAHand(command);
                     break;
                 case "gameOver":
                     handleGameOverCommand(command);
                     break;
-
+                case "cardsWithoutPair":
+                    handleCardsWithoutPair(command);
+                    break;
             }
         }
     }
 
     private static void handleCardsForYou(GameCommand command) {
-
         for (Card card : Card.stringToCards(command.body())) {
-            hand.offer(card);
+            if (!hand.contains(card)) {
+                hand.offer(card);
+            }
         }
     }
 
     private static void handleGetACard(GameCommand command) {
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card", hand.poll().toString()));
+                // String handString =
+                // hand.stream().map(Card::toString).collect(Collectors.joining(", "));
+                // playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards",
+                // handString));
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card",
+                        hand.poll().toString()));
             } else {
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCard", playerId));
             }
@@ -72,10 +82,15 @@ public class PouilleuxGameNetworkPlayer {
     }
 
     private static void handleCheckACard(GameCommand command) {
-        
+
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card", hand.peek().toString()));
+                // String handString =
+                // hand.stream().map(Card::toString).collect(Collectors.joining(", "));
+                // playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards",
+                // handString));
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card",
+                        hand.peek().toString()));
             } else {
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCard", playerId));
             }
@@ -85,17 +100,27 @@ public class PouilleuxGameNetworkPlayer {
     private static void handleGetAHand(GameCommand command) {
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards", hand.toString()));
+                String handString = hand.stream().map(Card::toString).collect(Collectors.joining(", "));
+                playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards", handString));
+                // playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards",
+                // hand.toString()));
             } else {
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCards", playerId));
             }
         }
     }
 
+    private static void handleCardsWithoutPair(GameCommand command) {
+        hand.clear();
+        for (Card card : Card.stringToCards(command.body())) {
+            hand.offer(card);
+        }
+    }
+
     private static void handleGameOverCommand(GameCommand command) {
         if (command.body().equals("win")) {
             System.out.println("I've won!");
-        } else if (command.body().equals("lose")){
+        } else if (command.body().equals("lose")) {
             System.out.println("Game Over! I've lost");
         } else {
             System.out.println("Game Over!");
