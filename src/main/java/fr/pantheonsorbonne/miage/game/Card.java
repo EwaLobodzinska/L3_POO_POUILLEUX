@@ -14,14 +14,13 @@ public class Card {
     private final CardColor color;
     private final CardValue value;
 
-
     public Card(CardColor color, CardValue value) {
         this.color = color;
         this.value = value;
     }
 
     public static String cardsToString(Card[] cards) {
-        return Arrays.stream(cards).map(Card::toString).collect(Collectors.joining(";"));
+        return Arrays.stream(cards).map(Card::toString).collect(Collectors.joining(", "));
     }
 
     public CardValue getValue() {
@@ -36,13 +35,13 @@ public class Card {
         if (cards.isEmpty()) {
             return new Card[0];
         }
-        return Arrays.stream(cards.split(";")).map(Card::valueOf).toArray(Card[]::new);
+        return Arrays.stream(cards.split(", ")).map(Card::valueOf).toArray(Card[]::new);
     }
 
     public static Card valueOf(String str) {
         CardValue value;
         CardColor color;
-        if (str.length() == 3) {//it's a 10
+        if (str.length() == 3) {// it's a 10
             value = CardValue.valueOfStr(str.substring(0, 2));
             color = CardColor.valueOfStr(str.substring(2, 3));
         } else {
@@ -57,11 +56,11 @@ public class Card {
         List<Card> possibleCards = new ArrayList<>(CardColor.values().length * CardValue.values().length);
         for (CardColor color : CardColor.values()) {
             for (CardValue value : CardValue.values()) {
-                //don't add valet of club
-                if(color.getCode() != 127137 + 16 * 3 || value.getRank() != 11){
+                // don't add valet of club
+                if (color.getCode() != 127137 + 16 * 3 || value.getRank() != 11) {
                     possibleCards.add(new Card(color, value));
                 }
-            }    
+            }
         }
         return possibleCards;
     }
@@ -81,8 +80,10 @@ public class Card {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Card)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Card))
+            return false;
         Card card = (Card) o;
         return getColor() == card.getColor() && getValue() == card.getValue();
     }
