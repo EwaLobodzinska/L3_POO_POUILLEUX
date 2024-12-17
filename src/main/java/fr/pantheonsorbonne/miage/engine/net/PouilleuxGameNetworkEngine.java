@@ -69,7 +69,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         try {
             return getCardFromPlayer(cardProviderPlayer);
         } catch (NoMoreCardException nmc) {
-            //declareWinner(cardProviderPlayer);
             return null;
         }
 
@@ -240,6 +239,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
     @Override
     protected void declareLoser(String loser) {
-        hostFacade.sendGameCommandToPlayer(pouilleux, loser, new GameCommand("gameOver", "win"));
+        hostFacade.sendGameCommandToPlayer(pouilleux, loser, new GameCommand("gameOver", "lose"));
     }
 }

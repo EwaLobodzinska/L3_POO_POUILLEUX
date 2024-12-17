@@ -59,7 +59,6 @@ public class PouilleuxGameNetworkPlayer {
         for (Card card : Card.stringToCards(command.body())) {
             hand.offer(card);
         }
-
     }
 
     private static void handleGetACard(GameCommand command) {
@@ -96,8 +95,10 @@ public class PouilleuxGameNetworkPlayer {
     private static void handleGameOverCommand(GameCommand command) {
         if (command.body().equals("win")) {
             System.out.println("I've won!");
+        } else if (command.body().equals("lose")){
+            System.out.println("Game Over! I've lost");
         } else {
-            System.out.println("I've lost :-(");
+            System.out.println("Game Over!");
         }
         System.exit(0);
     }

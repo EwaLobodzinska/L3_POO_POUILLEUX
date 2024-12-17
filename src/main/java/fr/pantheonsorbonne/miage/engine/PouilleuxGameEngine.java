@@ -123,12 +123,12 @@ public abstract class PouilleuxGameEngine {
         int rankToRemove = removePairsFromPlayer(firstPlayerInRound, tourColorValue);
 
         if (rankToRemove == 10) {
-            System.out.println("Pair of 10! Next player skips the tour!");
+            System.out.println("Pair of 10! Next player skips the turn!");
             skipNextPlayerTurn(players);
         }
 
         if (rankToRemove == 11) {
-            System.out.println("Pair of valets! Take an extra card!");
+            System.out.println("Pair of valets! Take one extra card!");
             getSecondCard(firstPlayerInRound, players, tourColor);
         }
 
@@ -138,7 +138,7 @@ public abstract class PouilleuxGameEngine {
         }
 
         if (rankToRemove == 13) {
-            System.out.println("Pair of Kings! Card exchange !");
+            System.out.println("Pair of Kings! Card exchange!");
             changeCards(players);
         }
 
@@ -249,12 +249,12 @@ public abstract class PouilleuxGameEngine {
             colorList.add(127137);
             colorList.add(127137 + 16 * 3);
             tourColor.put(players.size(), colorList);
-            System.out.println("Round color : black");
+            System.out.println("Round color: black");
         } else{
             colorList.add(127137 + 16);
             colorList.add(127137 + 16 * 2);
             tourColor.put(players.size(), colorList);
-            System.out.println("Round color : red");
+            System.out.println("Round color: red");
         }
         return tourColor;
     }
