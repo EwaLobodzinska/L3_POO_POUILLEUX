@@ -6,9 +6,12 @@ import fr.pantheonsorbonne.miage.game.Card;
 import fr.pantheonsorbonne.miage.model.Game;
 import fr.pantheonsorbonne.miage.model.GameCommand;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -31,12 +34,12 @@ public class PouilleuxGameNetworkPlayer {
             GameCommand command = playerFacade.receiveGameCommand(pouilleux);
             switch (command.name()) {
                 case "cardsForYou":
-                    System.out.println("I gave");
+                    //System.out.println("I gave");
                     handleCardsForYou(command);
                     break;
                 case "getACard":
-                    System.out.println(
-                            "I took a card ");
+                    // System.out.println(
+                    //         "I took a card ");
                     handleGetACard(command);
                     break;
                 case "checkACard":
@@ -64,6 +67,13 @@ public class PouilleuxGameNetworkPlayer {
             if (!hand.contains(card)) {
                 hand.offer(card);
             }
+        }
+        if(!hand.isEmpty()){
+            List<Card> shuffledCards = new ArrayList<>();
+            shuffledCards.addAll(hand);
+            Collections.shuffle(shuffledCards);
+            hand.clear();
+            hand.addAll(shuffledCards);
         }
     }
 
