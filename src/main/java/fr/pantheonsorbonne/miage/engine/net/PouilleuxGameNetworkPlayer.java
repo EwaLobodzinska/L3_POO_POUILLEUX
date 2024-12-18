@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-/**
- * this is the player part of the network version of the war game
- */
 public class PouilleuxGameNetworkPlayer {
 
     static final String playerId = "Player-" + new Random().nextInt();
@@ -33,17 +30,12 @@ public class PouilleuxGameNetworkPlayer {
             GameCommand command = playerFacade.receiveGameCommand(pouilleux);
             switch (command.name()) {
                 case "cardsForYou":
-                    //System.out.println("I gave");
                     handleCardsForYou(command);
                     break;
                 case "getACard":
-                    // System.out.println(
-                    //         "I took a card ");
                     handleGetACard(command);
                     break;
                 case "checkACard":
-                    //System.out.println(
-                            //"I gave a card ");
                     handleCheckACard(command);
                     break;
                 case "getAHand":
@@ -79,10 +71,6 @@ public class PouilleuxGameNetworkPlayer {
     private static void handleGetACard(GameCommand command) {
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                // String handString =
-                // hand.stream().map(Card::toString).collect(Collectors.joining(", "));
-                // playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards",
-                // handString));
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card",
                         hand.poll().toString()));
             } else {
@@ -95,10 +83,6 @@ public class PouilleuxGameNetworkPlayer {
 
         if (command.params().get("playerId").equals(playerId)) {
             if (!hand.isEmpty()) {
-                // String handString =
-                // hand.stream().map(Card::toString).collect(Collectors.joining(", "));
-                // playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards",
-                // handString));
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("card",
                         hand.peek().toString()));
             } else {
@@ -112,8 +96,6 @@ public class PouilleuxGameNetworkPlayer {
             if (!hand.isEmpty()) {
                 String handString = hand.stream().map(Card::toString).collect(Collectors.joining(", "));
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards", handString));
-                // playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("cards",
-                // hand.toString()));
             } else {
                 playerFacade.sendGameCommandToAll(pouilleux, new GameCommand("outOfCards", playerId));
             }
