@@ -36,7 +36,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
         hostFacade.createNewPlayer("Host");
 
-        fr.pantheonsorbonne.miage.model.Game pouilleux = hostFacade.createNewGame("POUILLEUX");
+        fr.pantheonsorbonne.miage.model.Game pouilleux = hostFacade.createNewGame("POUILLEUX2");
 
         hostFacade.waitForExtraPlayerCount(PLAYER_COUNT);
 
@@ -105,10 +105,9 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
     @Override
     protected void giveOneCardToPlayer(Card card, String player) {
-        List<Card> cards = new ArrayList<>();
-        cards.add(card);
+        Card[] cards = {card};
         hostFacade.sendGameCommandToPlayer(pouilleux, player,
-                new GameCommand("cardsForYou", Card.cardsToString(cards.toArray(new Card[cards.size()]))));
+                new GameCommand("cardsForYou", Card.cardsToString(cards)));
     }
 
     @Override

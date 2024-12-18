@@ -31,16 +31,17 @@ public class PouilleuxGameNetworkPlayer {
             GameCommand command = playerFacade.receiveGameCommand(pouilleux);
             switch (command.name()) {
                 case "cardsForYou":
+                    System.out.println("I gave");
                     handleCardsForYou(command);
                     break;
                 case "getACard":
                     System.out.println(
-                            "I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                            "I took a card ");
                     handleGetACard(command);
                     break;
-                case "giveACard":
-                    System.out.println(
-                            "I take " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
+                case "checkACard":
+                    //System.out.println(
+                            //"I gave a card ");
                     handleCheckACard(command);
                     break;
                 case "getAHand":
