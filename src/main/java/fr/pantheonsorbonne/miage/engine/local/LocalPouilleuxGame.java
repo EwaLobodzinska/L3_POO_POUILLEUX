@@ -75,7 +75,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     protected Card getCardOrGameOver(String cardProviderPlayer) {
 
         if (!this.playerCards.containsKey(cardProviderPlayer) || this.playerCards.get(cardProviderPlayer).isEmpty()) {
-            this.playerCards.remove(cardProviderPlayer); //necessaire?
+            this.playerCards.remove(cardProviderPlayer);
             return null;
         } else {
             return this.playerCards.get(cardProviderPlayer).poll();
@@ -86,7 +86,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     protected boolean checkCardOrGameOver(String cardProviderPlayer) {
 
         if (!this.playerCards.containsKey(cardProviderPlayer) || this.playerCards.get(cardProviderPlayer).isEmpty()) {
-            this.playerCards.remove(cardProviderPlayer); //??
+            this.playerCards.remove(cardProviderPlayer);
             return false;
         }
         return true;
@@ -169,7 +169,6 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                 } else {
                     blackCardCount.put(cardRank, 1);
                 }
-                // blackCardCount.put(cardRank, blackCardCount.getOrDefault(cardRank, 0) + 1);
 
                 if (blackCardCount.get(cardRank) == 2) {
                     for (Card cardPair : cards) {
@@ -188,7 +187,6 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                 } else {
                     redCardCount.put(cardRank, 1);
                 }
-                // redCardCount.put(cardRank, redCardCount.getOrDefault(cardRank, 0) + 1);
 
                 if (redCardCount.get(cardRank) == 2) {
                     for (Card cardPair : cards) {
