@@ -36,7 +36,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
 
         hostFacade.createNewPlayer("Host");
 
-        fr.pantheonsorbonne.miage.model.Game pouilleux = hostFacade.createNewGame("POUILLEUX2");
+        fr.pantheonsorbonne.miage.model.Game pouilleux = hostFacade.createNewGame("POUILLEUX");
 
         hostFacade.waitForExtraPlayerCount(PLAYER_COUNT);
 
