@@ -53,7 +53,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         hostFacade.sendGameCommandToPlayer(pouilleux, playerName, new GameCommand("cardsForYou", hand));
     }
 
-    //necessaire en reseau??
     @Override
     protected void giveCardsToPlayer(Collection<Card> roundStack, String player) {
         List<Card> cards = new ArrayList<>();
@@ -179,7 +178,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
                     } else {
                         blackCardCount.put(cardRank, 1);
                     }
-                    // blackCardCount.put(cardRank, blackCardCount.getOrDefault(cardRank, 0) + 1);
 
                     if (blackCardCount.get(cardRank) == 2) {
                         for (Card cardPair : cards) {
@@ -198,7 +196,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
                     } else {
                         redCardCount.put(cardRank, 1);
                     }
-                    // redCardCount.put(cardRank, redCardCount.getOrDefault(cardRank, 0) + 1);
 
                     if (redCardCount.get(cardRank) == 2) {
                         for (Card cardPair : cards) {
