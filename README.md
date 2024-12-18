@@ -55,7 +55,10 @@ Seule **une paire spéciale** peut être posée par tour.
 
 
 # Détail des classes principales
-
+* PouilleuxGameEngine le moteur du jeu (abstrait)
+* LocalPouilleuxGame la version du jeu supportant en local
+* PouilleuxGameNetworkPlayer le joueur distant en cas de partie réseau
+* PouilleuxGameNetworkEngine la version du jeu supportant le réseau
 
 # Protocole réseau
 > Le protocole réseau définit les séquences des commandes échangées entre les différentes parties prenantes.
