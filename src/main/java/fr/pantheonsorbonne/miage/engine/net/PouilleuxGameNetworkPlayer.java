@@ -8,7 +8,6 @@ import fr.pantheonsorbonne.miage.model.GameCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.List;
