@@ -41,7 +41,7 @@ public class Card {
     public static Card valueOf(String str) {
         CardValue value;
         CardColor color;
-        if (str.length() == 3) {// it's a 10
+        if (str.length() == 3) {
             value = CardValue.valueOfStr(str.substring(0, 2));
             color = CardColor.valueOfStr(str.substring(2, 3));
         } else {
@@ -56,7 +56,6 @@ public class Card {
         List<Card> possibleCards = new ArrayList<>(CardColor.values().length * CardValue.values().length);
         for (CardColor color : CardColor.values()) {
             for (CardValue value : CardValue.values()) {
-                // don't add valet of club
                 if (color.getCode() != 127137 + 16 * 3 || value.getRank() != 11) {
                     possibleCards.add(new Card(color, value));
                 }

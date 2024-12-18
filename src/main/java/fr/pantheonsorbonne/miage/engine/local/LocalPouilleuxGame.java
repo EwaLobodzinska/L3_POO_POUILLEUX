@@ -9,9 +9,6 @@ import fr.pantheonsorbonne.miage.game.RandomDeck;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * this class implements the war game locally
- */
 public class LocalPouilleuxGame extends PouilleuxGameEngine {
 
     private final List<String> initialPlayers;
@@ -30,7 +27,6 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                 Arrays.asList("Player1", "Player2"));
         localPouilleuxGame.play();
         System.exit(0);
-
     }
 
     @Override
@@ -45,6 +41,14 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
     }
 
     @Override
+    protected void giveCardsToPlayer(Collection<Card> roundStack, String player) {
+        List<Card> cards = new ArrayList<>();
+        cards.addAll(roundStack);
+        Collections.shuffle(cards);
+        this.playerCards.get(player).addAll(cards);
+    }
+
+    @Override
     protected String playRound(Deque<String> players, String playerA, String playerB, Map<Integer, List<Integer>> tourColor) {
         System.out.println("\nRound of: " + playerA);
         System.out
@@ -55,7 +59,6 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                                                 + this.playerCards.get(p).stream().map(c -> c.toFancyString())
                                                         .collect(Collectors.joining(" ")))
                                 .collect(Collectors.joining("\n")));
-        //System.out.println();
 
         return super.playRound(players, playerA, playerB, tourColor);
     }
@@ -87,14 +90,6 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
             return false;
         }
         return true;
-    }
-
-    @Override
-    protected void giveCardsToPlayer(Collection<Card> roundStack, String player) {
-        List<Card> cards = new ArrayList<>();
-        cards.addAll(roundStack);
-        Collections.shuffle(cards);
-        this.playerCards.get(player).addAll(cards);
     }
 
     @Override
@@ -141,13 +136,11 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                                 && card.getColor().getCode() != codeToRemove[1])){
                     updatedQueue.add(card);
                 } else if(tourColor != null && 
-                        (card.getColor().getCode() == tourColor.get(0) 
-                                || card.getColor().getCode() == tourColor.get(1))){
+                        (card.getColor().getCode() != tourColor.get(0) 
+                                || card.getColor().getCode() != tourColor.get(1))){
                     updatedQueue.add(card);
                 } else {
-                //} else if(rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 &&rankToRemove != 13 &&rankToRemove != 14){
                     pairRemoved = true;
-                //System.out.println(card.toString());
                 }
             }
             this.playerCards.put(player, updatedQueue);

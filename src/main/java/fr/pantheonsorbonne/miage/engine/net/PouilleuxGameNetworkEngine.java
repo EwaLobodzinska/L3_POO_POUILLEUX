@@ -12,9 +12,6 @@ import fr.pantheonsorbonne.miage.model.GameCommand;
 
 import java.util.*;
 
-/**
- * This class implements the war game with the network engine
- */
 public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
     private static final int PLAYER_COUNT = 4;
 
@@ -56,6 +53,16 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         hostFacade.sendGameCommandToPlayer(pouilleux, playerName, new GameCommand("cardsForYou", hand));
     }
 
+    //necessaire en reseau??
+    @Override
+    protected void giveCardsToPlayer(Collection<Card> roundStack, String player) {
+        List<Card> cards = new ArrayList<>();
+        cards.addAll(roundStack);
+        Collections.shuffle(cards);
+        hostFacade.sendGameCommandToPlayer(pouilleux, player,
+                new GameCommand("cardsForYou", Card.cardsToString(cards.toArray(new Card[cards.size()]))));
+    }
+
     @Override
     protected void declareWinner(String winner) {
         hostFacade.sendGameCommandToPlayer(pouilleux, winner, new GameCommand("gameOver", "win"));
@@ -81,15 +88,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
     }
 
     @Override
-    protected void giveCardsToPlayer(Collection<Card> roundStack, String player) {
-        List<Card> cards = new ArrayList<>();
-        cards.addAll(roundStack);
-        Collections.shuffle(cards);
-        hostFacade.sendGameCommandToPlayer(pouilleux, player,
-                new GameCommand("cardsForYou", Card.cardsToString(cards.toArray(new Card[cards.size()]))));
-    }
-
-    @Override
     protected Card getCardFromPlayer(String player) throws NoMoreCardException {
         hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("getACard"));
         GameCommand expectedCard = hostFacade.receiveGameCommand(pouilleux);
@@ -99,7 +97,6 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         if (expectedCard.name().equals("outOfCard")) {
             throw new NoMoreCardException();
         }
-        // should not happen!
         throw new RuntimeException("invalid state");
     }
 
@@ -142,8 +139,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
                                     || card.getColor().getCode() == tourColor.get(1))) {
                         updatedQueue.add(card);
                     } else {
-                    // } else if (rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 && rankToRemove != 13
-                    //         && rankToRemove != 14) {
+
                         pairRemoved = true;
                     }
                 }

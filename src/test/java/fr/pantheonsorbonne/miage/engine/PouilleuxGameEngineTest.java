@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PouilleuxGameEngineTest {
 
     PouilleuxGameEngine engine;
-    Queue<String> players;
+    Deque<String> players;
 
 
     @BeforeEach
@@ -51,39 +51,41 @@ class PouilleuxGameEngineTest {
         assertTrue(cardInHand.contains(card));
     }
 
-    // @Test
-    // void testGiveCardsToPlayer() throws NoMoreCardException {
-    //     Collection<Card> cards = Arrays.asList(Card.valueOf("KH"), Card.valueOf("2S"));
-    //     engine.giveCardsToPlayer("Joueur1", "KH;2S");
-    //     Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
-    //     assertTrue(cards.containsAll(cardInHand));
-    //     assertTrue(cardInHand.containsAll(cards));
-    // }
-
     @Test
-    void playRoundSimpleRound() throws NoMoreCardException {
+    void getCardFromPlayer() throws NoMoreCardException{
         engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KH")), "Joueur1");
-        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("QH")), "Joueur2");
-        //assertTrue(engine.playRound(this.players, "Joueur1", "Joueur2", new LinkedList<>()));
-        Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"));
-
-        assertTrue(cardInHand.contains(Card.valueOf("KH")));
-        assertTrue(cardInHand.contains(Card.valueOf("QH")));
-        assertEquals(2, cardInHand.size());
+        Card card = engine.getCardFromPlayer("Joueur1");
+        assertEquals("KH", card.toString());
     }
 
     @Test
-    void playRoundEquality() {
-        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KH")), "Joueur1");
-        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KD")), "Joueur2");
-        Queue<Card> handOver = new LinkedList<>();
-        //assertFalse(engine.playRound(this.players, "Joueur1", "Joueur2"));
+    void playRoundSimpleRound() throws NoMoreCardException {
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("2H"), Card.valueOf("10C")), "Joueur1");
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("2D")), "Joueur2");
+        Map<Integer, List<Integer>> tourColor = new HashMap<>();
+        String winner = engine.playRound(this.players, "Joueur1", "Joueur2", tourColor);
+        
+        Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
 
-        assertThrows(NoMoreCardException.class, () -> engine.getCardFromPlayer("Joueur1"));
-        assertThrows(NoMoreCardException.class, () -> engine.getCardFromPlayer("Joueur2"));
-        assertTrue(handOver.contains(Card.valueOf("KH")));
-        assertTrue(handOver.contains(Card.valueOf("KD")));
-        assertEquals(2, handOver.size());
+        assertFalse(cardInHand.contains(Card.valueOf("2H")));
+        assertEquals("Joueur2", winner);
+    }
+
+    @Test
+    void playRoundTourColor() throws NoMoreCardException {
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("2H"), Card.valueOf("10C")), "Joueur1");
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("2D")), "Joueur2");
+        Map<Integer, List<Integer>> tourColor = new HashMap<>();
+        List<Integer> colorList = new ArrayList<>();
+        colorList.add(127137);
+        colorList.add(127137 + 16 * 3);
+        tourColor.put(players.size(), colorList);
+
+        engine.playRound(this.players, "Joueur1", "Joueur2", tourColor);
+        Collection<Card> cardInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
+
+        assertTrue(cardInHand.contains(Card.valueOf("2H")));
+
     }
 
     @Test
@@ -94,22 +96,6 @@ class PouilleuxGameEngineTest {
         assertEquals("KH", engine.getCardOrGameOver("Joueur1").toString());
     }
 
-    // @Test
-    // void getWinnerWinJ2() {
-    //     assertEquals("Joueur2", PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("2H"), Card.valueOf("3H")));
-    // }
-
-    // @Test
-    // void getWinnerWinJ1() {
-    //     assertEquals("Joueur1", PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("3H"), Card.valueOf("2H")));
-    // }
-
-    // @Test
-    // void getWinnerTie() {
-    //     assertEquals(null, PouilleuxGameEngine.getWinner("Joueur1", "Joueur2", Card.valueOf("3H"), Card.valueOf("3S")));
-    // }
-
-
     @Test
     void play() throws NoMoreCardException {
         this.engine.play();
@@ -117,5 +103,70 @@ class PouilleuxGameEngineTest {
         assertThrows(NoMoreCardException.class, () -> this.engine.getCardFromPlayer("Joueur3"));
         Collection<Card> player1Cards = Arrays.asList(this.engine.getCardFromPlayer("Joueur1"), this.engine.getCardFromPlayer("Joueur1"), this.engine.getCardFromPlayer("Joueur1"));
         player1Cards.containsAll(Card.getAllPossibleCards().subList(0, 3));
+    }
+
+
+    @Test 
+    void findPairs(){
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KH"), Card.valueOf("KD")), "Joueur1");
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("KS"), Card.valueOf("KD")), "Joueur2");
+        List<Card> pair = new ArrayList<>();
+        pair.add(Card.valueOf("KD"));
+        pair.add(Card.valueOf("KH"));
+        assertTrue(pair.containsAll(engine.findPairs("Joueur1")));
+        assertNull(engine.findPairs("Joueur2"));
+    }
+
+    @Test
+    void removePairsFromPlayer() throws NoMoreCardException {
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("10C"), Card.valueOf("10S"), Card.valueOf("10D")), "Joueur1");
+        int rank = engine.removePairsFromPlayer("Joueur1", null);
+        Collection<Card> cardsInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
+        List<Card> pair = new ArrayList<>();
+        pair.add(Card.valueOf("10C"));
+        pair.add(Card.valueOf("10S"));
+        
+        assertFalse(cardsInHand.containsAll(pair));
+        assertEquals(10, rank);
+        assertEquals(1, cardsInHand.size());
+    }
+
+    @Test 
+    void getSecondCard() throws NoMoreCardException{
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("7C")), "Joueur1");
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("7S")), "Joueur2");
+        Deque<String> playersTest = new LinkedList<>();
+        playersTest.add("Joueur1");
+        playersTest.add("Joueur2");
+        Map<Integer, List<Integer>> tourColor = new HashMap<>();
+
+        String winner = engine.getSecondCard("Joueur1", players, tourColor);
+        Collection<Card> cardsInHand = Arrays.asList(engine.getCardFromPlayer("Joueur1"), engine.getCardFromPlayer("Joueur1"));
+        assertTrue(cardsInHand.contains(Card.valueOf("7S")));
+        assertEquals("Joueur2", winner);
+    }   
+
+    @Test 
+    void changeCards() throws NoMoreCardException{
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("8C")), "Joueur1");
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("7S")), "Joueur2");
+        Deque<String> playersTest = new LinkedList<>();
+        playersTest.add("Joueur1");
+        playersTest.add("Joueur2");
+
+        engine.changeCards(playersTest);
+        Collection<Card> cardsInHandFirst = Arrays.asList(engine.getCardFromPlayer("Joueur1"));
+        Collection<Card> cardsInHandSecond = Arrays.asList(engine.getCardFromPlayer("Joueur2"));
+
+        assertTrue(cardsInHandFirst.contains(Card.valueOf("7S")));
+        assertTrue(cardsInHandSecond.contains(Card.valueOf("8C")));
+    }  
+    
+    @Test
+    void checkLoser(){
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("11S")), "Joueur1");
+        engine.giveCardsToPlayer(Arrays.asList(Card.valueOf("7S")), "Joueur2");
+        assertTrue(engine.checkLoser("Joueur1"));
+        assertFalse(engine.checkLoser("Joueur2"));
     }
 }
