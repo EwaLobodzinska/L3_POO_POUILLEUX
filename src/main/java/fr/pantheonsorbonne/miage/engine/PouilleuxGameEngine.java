@@ -17,7 +17,7 @@ public abstract class PouilleuxGameEngine {
 
     public void play() {
         int numberOfPlayers = getInitialPlayers().size();
-        int handSize = 51 / numberOfPlayers; // comment trouver deck.size? pour ne pas avoir le variable
+        int handSize = 51 / numberOfPlayers;
         int remainingDeck = 51;
         for (String playerName : getInitialPlayers()) {
             Card[] cards;
@@ -226,7 +226,6 @@ public abstract class PouilleuxGameEngine {
 
         int indexFirstPlayer = rand.nextInt(players.size());
         String firstPlayer = listPlayers.get(indexFirstPlayer);
-        //System.out.println(firstPlayer);
 
         int indexSecondPlayer;
         String secondPlayer;
@@ -235,7 +234,6 @@ public abstract class PouilleuxGameEngine {
             secondPlayer = listPlayers.get(indexSecondPlayer);
         }
         while (secondPlayer.equals(firstPlayer));
-        //System.out.println(secondPlayer);
 
         Card cardToFirstPlayer = getCardOrGameOver(secondPlayer);
         if(cardToFirstPlayer != null){
