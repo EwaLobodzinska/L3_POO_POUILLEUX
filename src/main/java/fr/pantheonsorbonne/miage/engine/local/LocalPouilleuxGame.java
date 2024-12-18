@@ -55,19 +55,17 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
                                                 + this.playerCards.get(p).stream().map(c -> c.toFancyString())
                                                         .collect(Collectors.joining(" ")))
                                 .collect(Collectors.joining("\n")));
-        System.out.println();
-        //System.out.println("Round of : " + playerA);
+        //System.out.println();
+
         return super.playRound(players, playerA, playerB, tourColor);
     }
 
     @Override
     protected void declareWinner(String winner) {
-        System.out.println("\n" + winner + " has won!");
     }
 
     @Override
     protected void declareLoser(String loser) {
-        System.out.println(loser + " has lost :(");
     }
 
     @Override

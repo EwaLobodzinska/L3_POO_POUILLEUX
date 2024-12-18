@@ -114,6 +114,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
     protected int removePairsFromPlayer(String player, List<Integer> tourColor) {
         List<Card> pairs = findPairs(player);
         int rankToRemove = 0;
+        boolean pairRemoved = false;
 
         if (pairs != null && pairs.size() == 2) {
             hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("getAHand"));
@@ -140,17 +141,19 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
                             (card.getColor().getCode() == tourColor.get(0)
                                     || card.getColor().getCode() == tourColor.get(1))) {
                         updatedQueue.add(card);
-                        // } else {
-                    } else if (rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 && rankToRemove != 13
-                            && rankToRemove != 14) {
-                        System.out.println(card.toString());
+                    } else {
+                    // } else if (rankToRemove != 10 && rankToRemove != 11 && rankToRemove != 12 && rankToRemove != 13
+                    //         && rankToRemove != 14) {
+                        pairRemoved = true;
                     }
                 }
-                hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("cardsWithoutPair",
+
+                if(pairRemoved){
+                    System.out.println(player + " found a pair: " + pairs.get(0).toFancyString() +" " + pairs.get(1).toFancyString());
+                }
+
+                hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("cardsWithRemovedPair",
                         Card.cardsToString(updatedQueue.toArray(new Card[updatedQueue.size()]))));
-                // hostFacade.sendGameCommandToPlayer(pouilleux, player, new
-                // GameCommand("cardsWithoutPair"));
-                // giveCardsToPlayer(updatedQueue, player);
             }
         }
         return rankToRemove;
@@ -232,6 +235,7 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
                 }
             }
         }
+        hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("gameOver", "gameOver"));
         return false;
     }
 

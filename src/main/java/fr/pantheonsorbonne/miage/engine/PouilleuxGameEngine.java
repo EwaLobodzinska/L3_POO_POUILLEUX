@@ -60,7 +60,8 @@ public abstract class PouilleuxGameEngine {
         }
 
         Map<Integer, List<Integer>> tourColor = new HashMap<>();
-
+        String loser = "";
+        String winner;
         while (true) {
             if(!tourColor.isEmpty()){
                 int tourColorKey = tourColor.keySet().iterator().next();
@@ -81,16 +82,19 @@ public abstract class PouilleuxGameEngine {
             players.addFirst(secondPlayerInRound);
             String play;
             if ((play = playRound(players, firstPlayerInRound, secondPlayerInRound, tourColor)) != "") {
-                String winner = play;
+                winner = play;
                 declareWinner(winner);
                 for (String player : players) {
                     if (player != winner && checkLoser(player)) {
+                        loser = player;
                         declareLoser(player);
                     }
                 }
                 break;
             }
         }
+        System.out.println("\n" + winner + " has won!");
+        System.out.println(loser + " has lost :(");
     }
 
     protected abstract List<String> getInitialPlayers();
@@ -110,12 +114,11 @@ public abstract class PouilleuxGameEngine {
             winner = secondPlayerInRound;
             return winner;
         }
-        System.out.println(firstPlayerInRound + " took " + cardToFirstPlayer.toFancyString() + " from " + secondPlayerInRound);
-        //System.out.println(cardToFirstPlayer.toString());
+        System.out.println("\n" + firstPlayerInRound + " took " + cardToFirstPlayer.toFancyString() + " from " + secondPlayerInRound);
         giveOneCardToPlayer(cardToFirstPlayer, firstPlayerInRound);
 
-        boolean checkCardOrGameOverSecond = checkCardOrGameOver(secondPlayerInRound);
-        if (!checkCardOrGameOverSecond) {
+        boolean checkCardOrGameOver = checkCardOrGameOver(secondPlayerInRound);
+        if (!checkCardOrGameOver) {
             winner = secondPlayerInRound;
             return winner;
         }
@@ -129,6 +132,11 @@ public abstract class PouilleuxGameEngine {
 
         if (rankToRemove == 11) {
             System.out.println("Pair of valets! Take one extra card!");
+            checkCardOrGameOver= checkCardOrGameOver(firstPlayerInRound);
+            if (!checkCardOrGameOver) {
+                winner = firstPlayerInRound;
+                return winner;
+            }
             getSecondCard(firstPlayerInRound, players, tourColor);
         }
 
@@ -148,7 +156,7 @@ public abstract class PouilleuxGameEngine {
             tourColor.putAll(defineColor(players));
         }
 
-        boolean checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
+        checkCardOrGameOver = checkCardOrGameOver(firstPlayerInRound);
         if (!checkCardOrGameOver) {
             winner = firstPlayerInRound;
             return winner;

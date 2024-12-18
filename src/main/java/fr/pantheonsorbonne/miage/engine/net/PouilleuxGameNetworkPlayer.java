@@ -31,6 +31,8 @@ public class PouilleuxGameNetworkPlayer {
             switch (command.name()) {
                 case "cardsForYou":
                     handleCardsForYou(command);
+                    System.out.println(
+                            "\nMy hand: \n" + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
                     break;
                 case "getACard":
                     handleGetACard(command);
@@ -39,16 +41,17 @@ public class PouilleuxGameNetworkPlayer {
                     handleCheckACard(command);
                     break;
                 case "getAHand":
-                    System.out.println(
-                            "My hand " + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
                     handleGetAHand(command);
+                    break;
+                case "cardsWithRemovedPair":
+                    handleCardsWithRemovedPair(command);
+                    System.out.println(
+                        "I removed a pair! \n" + hand.stream().map(Card::toFancyString).collect(Collectors.joining(" ")));
                     break;
                 case "gameOver":
                     handleGameOverCommand(command);
                     break;
-                case "cardsWithoutPair":
-                    handleCardsWithoutPair(command);
-                    break;
+                
             }
         }
     }
@@ -102,7 +105,7 @@ public class PouilleuxGameNetworkPlayer {
         }
     }
 
-    private static void handleCardsWithoutPair(GameCommand command) {
+    private static void handleCardsWithRemovedPair(GameCommand command) {
         hand.clear();
         for (Card card : Card.stringToCards(command.body())) {
             hand.offer(card);
@@ -114,7 +117,7 @@ public class PouilleuxGameNetworkPlayer {
             System.out.println("I've won!");
         } else if (command.body().equals("lose")) {
             System.out.println("Game Over! I've lost");
-        } else {
+        } else if (command.body().equals("gameOver")) {
             System.out.println("Game Over!");
         }
         System.exit(0);
