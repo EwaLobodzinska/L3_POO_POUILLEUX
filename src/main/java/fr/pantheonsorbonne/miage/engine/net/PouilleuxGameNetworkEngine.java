@@ -216,6 +216,17 @@ public class PouilleuxGameNetworkEngine extends PouilleuxGameEngine {
         return null;
     }
 
+    @Override 
+    protected int playerHandSize(String player){
+        hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("getAHand"));
+        GameCommand expectedHand = hostFacade.receiveGameCommand(pouilleux);
+        if (expectedHand.name().equals("cards")) {
+            Card[] cards = Card.stringToCards(expectedHand.body());
+            return cards.length;
+        }
+        return 0;
+    }
+
     @Override
     protected boolean checkLoser(String player) {
         hostFacade.sendGameCommandToPlayer(pouilleux, player, new GameCommand("getAHand"));

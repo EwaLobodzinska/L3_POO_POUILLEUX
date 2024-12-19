@@ -147,7 +147,7 @@ public abstract class PouilleuxGameEngine {
 
         if (rankToRemove == 13) {
             System.out.println("Pair of Kings! Card exchange!");
-            changeCards(players);
+            changeCards(firstPlayerInRound, players);
         }
 
         if (rankToRemove == 14) {
@@ -203,37 +203,71 @@ public abstract class PouilleuxGameEngine {
         players.addLast(skippedPlayer);
     }
 
+    protected abstract int playerHandSize(String player);
+
     protected String getSecondCard(String player, Deque<String> players, Map<Integer, List<Integer>> tourColor){
-        List<String> listPlayers = new ArrayList<>(players);
-        Random rand = new Random();
-        String secondPlayer;
-        int indexSecondPlayer;
-        do {
-            indexSecondPlayer = rand.nextInt(players.size());
-            secondPlayer = listPlayers.get(indexSecondPlayer);
+        String secondPlayer = "";
+        int maxHand = 0;
+        for(String playerHand : players){
+            if(playerHandSize(playerHand) > maxHand && playerHand != player){
+                maxHand = playerHandSize(playerHand);
+                secondPlayer = playerHand;
+            }
         }
-        while (secondPlayer.equals(player));
+        // List<String> listPlayers = new ArrayList<>(players);
+        // Random rand = new Random();
+        // String secondPlayer;
+        // int indexSecondPlayer;
+        // do {
+        //     indexSecondPlayer = rand.nextInt(players.size());
+        //     secondPlayer = listPlayers.get(indexSecondPlayer);
+        // }
+        // while (secondPlayer.equals(player));
         if (!tourColor.isEmpty()){
             int tourColorKey = tourColor.keySet().iterator().next();
             tourColorKey++;
         }
         return playRound(players, player, secondPlayer, tourColor);
     }
+   
+    protected void changeCards(String player, Deque<String> players){
+        int maxHand = 0;
+        int secondMaxHand = 0;
+        int min = playerHandSize(players.peekFirst());
+        String firstPlayer = players.peekFirst();
+        String secondPlayer = players.peekLast();
 
-    protected void changeCards(Deque<String> players){
-        List<String> listPlayers = new ArrayList<>(players);
-        Random rand = new Random();
-
-        int indexFirstPlayer = rand.nextInt(players.size());
-        String firstPlayer = listPlayers.get(indexFirstPlayer);
-
-        int indexSecondPlayer;
-        String secondPlayer;
-        do {
-            indexSecondPlayer = rand.nextInt(players.size()) ;
-            secondPlayer = listPlayers.get(indexSecondPlayer);
+        for(String playerHand : players){
+            if (playerHandSize(playerHand) < min){
+            min = playerHandSize(playerHand);
         }
-        while (secondPlayer.equals(firstPlayer));
+            if(playerHandSize(playerHand) >= maxHand){
+                secondMaxHand = maxHand;
+                secondPlayer = firstPlayer;
+                maxHand = playerHandSize(playerHand);
+                firstPlayer = playerHand;
+
+            } else if(playerHandSize(playerHand) >= secondMaxHand){
+                secondMaxHand = maxHand;
+                secondPlayer = playerHand;
+            }
+        }
+        if(playerHandSize(player) == min && firstPlayer != player){
+            secondPlayer = player;
+        }
+        // List<String> listPlayers = new ArrayList<>(players);
+        // Random rand = new Random();
+
+        // int indexFirstPlayer = rand.nextInt(players.size());
+        // String firstPlayer = listPlayers.get(indexFirstPlayer);
+
+        // int indexSecondPlayer;
+        // String secondPlayer;
+        // do {
+        //     indexSecondPlayer = rand.nextInt(players.size()) ;
+        //     secondPlayer = listPlayers.get(indexSecondPlayer);
+        // }
+        // while (secondPlayer.equals(firstPlayer));
 
         Card cardToFirstPlayer = getCardOrGameOver(secondPlayer);
         if(cardToFirstPlayer != null){

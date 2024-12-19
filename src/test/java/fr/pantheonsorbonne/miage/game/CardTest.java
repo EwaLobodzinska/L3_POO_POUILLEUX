@@ -33,7 +33,7 @@ class CardTest {
 
     @Test
     void stringToCards() {
-        Card[] cards = Card.stringToCards("10S;KH");
+        Card[] cards = Card.stringToCards("10S, KH");
         assertEquals(new Card(CardColor.SPADE, CardValue.TEN), cards[0]);
         assertEquals(new Card(CardColor.HEART, CardValue.KING), cards[1]);
     }

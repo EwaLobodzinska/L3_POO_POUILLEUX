@@ -24,7 +24,7 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
 
     public static void main(String... args) {
         LocalPouilleuxGame localPouilleuxGame = new LocalPouilleuxGame(new RandomDeck(),
-                Arrays.asList("Player1", "Player2"));
+                Arrays.asList("Player1", "Player2", "Player3"));
         localPouilleuxGame.play();
         System.exit(0);
     }
@@ -202,6 +202,11 @@ public class LocalPouilleuxGame extends PouilleuxGameEngine {
             }
         }
         return null;
+    }
+
+    @Override
+    protected int playerHandSize(String player){
+        return this.playerCards.get(player).size();
     }
 
     @Override
